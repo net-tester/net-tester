@@ -32,15 +32,15 @@ module NetTester
     end
 
     def stop
-      sh "vhost stop -n #{ip_address}"
+      sh "vhost stop -n #{ip_address} -S ./tmp/sockets"
     end
 
     def send_packet(destination)
-      Phut::VhostDaemon.process(ip_address, '/tmp').send_packets(destination.vhost, 1)
+      Phut::VhostDaemon.process(ip_address, File.expand_path('./tmp/sockets')).send_packets(destination.vhost, 1)
     end
 
     def packets_received_from(source)
-      Phut::VhostDaemon.process(ip_address, '/tmp').stats[:rx].select do |each|
+      Phut::VhostDaemon.process(ip_address, File.expand_path('./tmp/sockets')).stats[:rx].select do |each|
         (each[:source_mac].to_s == source.mac_address) && (each[:source_ip_address].to_s == source.ip_address)
       end
     end
@@ -57,7 +57,9 @@ module NetTester
        "-i #{ip_address}",
        "-m #{mac_address}",
        "-a #{arp_entries}",
-       '-L log'].compact.join(' ')
+       '-L log',
+       "-P #{File.expand_path './tmp/pids'}",
+       "-S #{File.expand_path './tmp/sockets'}"].compact.join(' ')
     end
 
     def arp_entries
