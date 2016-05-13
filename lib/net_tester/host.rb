@@ -56,7 +56,8 @@ module NetTester
        "-I #{network_device}",
        "-i #{ip_address}",
        "-m #{mac_address}",
-       "-a #{arp_entries}"].compact.join(' ')
+       "-a #{arp_entries}",
+       '-L log'].compact.join(' ')
     end
 
     def arp_entries
