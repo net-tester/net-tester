@@ -10,6 +10,7 @@ After do
   PhysicalTestSwitch.destroy
   Host.destroy_all
   Link.destroy_all
-  system 'bundle exec trema killall NetTester 2>/dev/null'
-  system 'bundle exec trema killall LearningSwitch 2>/dev/null'
+  system 'bundle exec trema killall NetTester -S ./tmp/sockets'
+  system 'bundle exec trema killall LearningSwitch -S tmp/sockets 2>/dev/null'
+  system 'bundle exec trema killall PacketInLogger -S tmp/sockets 2>/dev/null'
 end

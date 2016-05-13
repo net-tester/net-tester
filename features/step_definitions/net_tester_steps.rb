@@ -2,7 +2,23 @@
 # frozen_string_literal: true
 Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
   Switch.create(dpid: 0x1, port: 6654)
-  system('bundle exec trema run ./vendor/learning_switch/lib/learning_switch.rb --port 6654 -L log -P tmp/pids --daemon') || raise('Failed to start LearningSwitch')
+  system('bundle exec trema run ./vendor/learning_switch/lib/learning_switch.rb --port 6654 -L log -P tmp/pids -S tmp/sockets --daemon') || raise('Failed to start LearningSwitch')
+end
+
+Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチを起動$/) do
+  Switch.create(dpid: 0x1, port: 6654)
+  File.open('./tmp/packet_in_logger.rb', 'w') do |f|
+    f.print <<-EOF
+class PacketInLogger < Trema::Controller
+  def packet_in(dpid, message)
+    logger.info 'PACKET_IN ' + message.in_port.to_s
+  end
+end
+EOF
+  end
+
+  FileUtils.rm_f './log/PacketInLogger.log'
+  system('bundle exec trema run ./tmp/packet_in_logger.rb --port 6654 -L log -P tmp/pids -S tmp/sockets --daemon') || raise('Failed to start PacketInLogger')
 end
 
 Given(/^テスト用の仮想ホストが (\d+) 台$/) do |nhost|
@@ -23,7 +39,7 @@ Given(/^NetTester を起動$/) do
     Switch.all.first.add_port link.devices.second
   end
 
-  system("bundle exec trema run ./lib/net_tester/controller.rb -L log -P tmp/pids --daemon -- #{@nhost}") || raise('Failed to start NetTester')
+  system("bundle exec trema run ./lib/net_tester/controller.rb -L log -P tmp/pids -S tmp/sockets --daemon -- #{@nhost}") || raise('Failed to start NetTester')
   link = Link.create
   TestSwitch.add_port(link.devices.first)
   PhysicalTestSwitch.add_port(link.devices.second)
@@ -31,6 +47,14 @@ Given(/^NetTester を起動$/) do
   TestSwitch.start
   PhysicalTestSwitch.start
   Host.all.each(&:start)
+
+  sleep 1
+end
+
+When(/^次のパッチを追加:$/) do |table|
+  table.hashes.each do |each|
+    Trema.trema_process('NetTester', File.expand_path('./tmp/sockets')).controller.create_patch(each['source host'].to_i, each['destination port'].to_i)
+  end
 end
 
 When(/^各テスト用ホストが次のようにパケットを送信:$/) do |table|
@@ -47,5 +71,17 @@ Then(/^各テスト用ホストは次のようにパケットを受信する:$/)
     source = Host.all[each['source host'].to_i - 1]
     dest = Host.all[each['destination host'].to_i - 1]
     expect(dest.packets_received_from(source).size).to eq 1
+  end
+end
+
+Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:$/) do |table|
+  table.hashes.each do |each|
+    expect(IO.readlines('./log/PacketInLogger.log').any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be true
+  end
+end
+
+Then(/^テスト対象の OpenFlow スイッチの次のポートには PacketIn が届かない:$/) do |table|
+  table.hashes.each do |each|
+    expect(IO.readlines('./log/PacketInLogger.log').any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false
   end
 end

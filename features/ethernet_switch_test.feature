@@ -5,6 +5,10 @@ Feature: イーサネットスイッチをテスト
   Scenario: ホスト 2 台でパケットを送受信
     Given テスト用の仮想ホストが 2 台
     And NetTester を起動
+    When 次のパッチを追加:
+      | source host | destination port |
+      |           1 |                1 |
+      |           2 |                2 |
     When 各テスト用ホストが次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |
@@ -17,6 +21,10 @@ Feature: イーサネットスイッチをテスト
   Scenario: ホスト 3 台でパケットを送受信
     Given テスト用の仮想ホストが 3 台
     And NetTester を起動
+    When 次のパッチを追加:
+      | source host | destination port |
+      |           1 |                1 |
+      |           2 |                2 |
     When 各テスト用ホストが次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |

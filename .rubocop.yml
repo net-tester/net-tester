@@ -1,4 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.3
+  Exclude:
+    - tmp/**/*
+    - vendor/**/*
 
 inherit_from: .rubocop_todo.yml
