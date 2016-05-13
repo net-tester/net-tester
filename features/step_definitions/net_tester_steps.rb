@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
   Switch.create(dpid: 0x1, port: 6654)
-  system('bundle exec trema run ./lib/learning_switch.rb --port 6654 --daemon') || raise('Failed to start LearningSwitch')
+  system('bundle exec trema run ./vendor/learning_switch/lib/learning_switch.rb --port 6654 --daemon') || raise('Failed to start LearningSwitch')
 end
 
 Given(/^テスト用の仮想ホストが (\d+) 台$/) do |nhost|
