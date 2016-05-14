@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'active_support/core_ext/array/access'
+require 'faker'
+require 'gli'
+require 'net_tester'
+require 'trema'
+
+module NetTester
+  # net_tester command
+  module App
+    extend GLI::App
+    include NetTester
+
+    desc 'Runs NetTester'
+    arg_name 'nhost device'
+    command :run do |c|
+      c.action do |_global_options, _options, args|
+        log_dir = './log'
+        pid_dir = './tmp/pids'
+        socket_dir = './tmp/sockets'
+        controller_file = File.expand_path File.join(__dir__, '..', 'lib', 'net_tester', 'controller.rb')
+
+        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{args.first.to_i}") || raise('Failed to start NetTester')
+
+        @test_switch = TestSwitch.create(dpid: 0xabc)
+        ip_address = Array.new(args.first.to_i) { Faker::Internet.ip_v4_address }
+        mac_address = Array.new(args.first.to_i) { Faker::Internet.mac_address }
+        arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
+        args.first.to_i.times do |host_id|
+          link = Link.create
+          Host.create(name: "host#{host_id + 1}",
+                      ip_address: ip_address[host_id],
+                      mac_address: mac_address[host_id],
+                      device: link.devices.first,
+                      arp_entries: arp_entries)
+          @test_switch.add_port(link.devices.second)
+        end
+        @test_switch.add_port(args.second)
+      end
+    end
+
+    desc 'Add a patch'
+    arg_name 'source_port destination_port'
+    command :add do |c|
+      c.action do |_global_options, _options, args|
+        socket_dir = './tmp/sockets'
+        Trema.trema_process('NetTester', socket_dir).controller.create_patch(args.first.to_i, args.second.to_i)
+      end
+    end
+
+    desc 'Send packet'
+    arg_name 'source_host destination_host'
+    command :send_packet do |c|
+      c.action do |_global_options, _options, args|
+        source = Host.all.find { |each| each.name == args.first }
+        dest = Host.all.find { |each| each.name == args.second }
+        source.send_packet(dest)
+      end
+    end
+
+    desc 'Show received packets'
+    arg_name 'dest_host source_host'
+    command :show_received_packets do |c|
+      c.action do |_global_options, _options, args|
+        dest = Host.all.find { |each| each.name == args.first }
+        source = Host.all.find { |each| each.name == args.second }
+        puts dest.packets_received_from(source).size
+      end
+    end
+
+    on_error do |e|
+      raise e
+    end
+
+    exit run(ARGV)
+  end
+end
