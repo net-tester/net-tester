@@ -1,87 +1,82 @@
 # coding: utf-8
 # frozen_string_literal: true
+Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
+  step 'NetTester マシン用ネットワークデバイスの代わりに仮想リンクを作る'
+  step "テストホスト #{nhost} 台を起動"
+  step "テスト用の物理スイッチの代わりに Open vSwitch を起動し、テスト対象のスイッチと #{nhost} 本のケーブルでつなぐ"
+end
+
+Given(/^NetTester マシン用ネットワークデバイスの代わりに仮想リンクを作る$/) do
+  @link = Link.create
+end
+
 Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
   Switch.create(dpid: 0x1, port: 6654)
-  system('bundle exec trema run ./vendor/learning_switch/lib/learning_switch.rb --port 6654 -L log -P tmp/pids -S tmp/sockets --daemon') || raise('Failed to start LearningSwitch')
+  cd('.') do
+    step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
+  end
 end
 
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチを起動$/) do
   Switch.create(dpid: 0x1, port: 6654)
-  File.open('./tmp/packet_in_logger.rb', 'w') do |f|
-    f.print <<-EOF
+  step 'a file named "packet_in_logger.rb" with:', <<-EOF
 class PacketInLogger < Trema::Controller
   def packet_in(dpid, message)
     logger.info 'PACKET_IN ' + message.in_port.to_s
   end
 end
 EOF
-  end
-
-  FileUtils.rm_f './log/PacketInLogger.log'
-  system('bundle exec trema run ./tmp/packet_in_logger.rb --port 6654 -L log -P tmp/pids -S tmp/sockets --daemon') || raise('Failed to start PacketInLogger')
-end
-
-Given(/^テスト用の仮想ホストが (\d+) 台$/) do |nhost|
-  @nhost = nhost.to_i
-  nhost.to_i.times do
-    host = Host.create(ip_address: Faker::Internet.ip_v4_address,
-                       mac_address: FactoryGirl.generate(:mac_address))
-    link = Link.create
-    host.network_device = link.devices.first
-    TestSwitch.add_port(link.devices.second)
+  cd('.') do
+    step %(I successfully run `bundle exec trema run packet_in_logger.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
   end
 end
 
-Given(/^NetTester を起動$/) do
-  @nhost.times do
+Given(/^テスト用の物理スイッチの代わりに Open vSwitch を起動し、テスト対象のスイッチと (\d+) 本のケーブルでつなぐ$/) do |nlink|
+  @physical_test_switch = PhysicalTestSwitch.create(dpid: 0xdef)
+  nlink.to_i.times do
     link = Link.create
-    PhysicalTestSwitch.add_port(link.devices.first)
+    @physical_test_switch.add_port(link.devices.first)
     Switch.all.first.add_port link.devices.second
   end
+  @physical_test_switch.add_port(@link.devices.second)
+end
 
-  system("bundle exec trema run ./lib/net_tester/controller.rb -L log -P tmp/pids -S tmp/sockets --daemon -- #{@nhost}") || raise('Failed to start NetTester')
-  link = Link.create
-  TestSwitch.add_port(link.devices.first)
-  PhysicalTestSwitch.add_port(link.devices.second)
-  Switch.all.each(&:start)
-  TestSwitch.start
-  PhysicalTestSwitch.start
-  Host.all.each(&:start)
-
-  sleep 1
+Given(/^テストホスト (\d+) 台を起動$/) do |nhost|
+  step "I successfully run `net_tester run #{nhost} #{@link.devices.first}`"
 end
 
 When(/^次のパッチを追加:$/) do |table|
   table.hashes.each do |each|
-    Trema.trema_process('NetTester', File.expand_path('./tmp/sockets')).controller.create_patch(each['source host'].to_i, each['destination port'].to_i)
+    step "I successfully run `net_tester add #{each['source host']} #{each['destination port']}`"
   end
 end
 
-When(/^各テスト用ホストが次のようにパケットを送信:$/) do |table|
+When(/^各テストホストから次のようにパケットを送信:$/) do |table|
   table.hashes.each do |each|
-    source_id = each['source host'].to_i - 1
-    dest_id = each['destination host'].to_i - 1
-    Host.all[source_id].send_packet(Host.all[dest_id])
+    step "I successfully run `net_tester send_packet host#{each['source host']} host#{each['destination host']}`"
   end
   sleep 1
 end
 
-Then(/^各テスト用ホストは次のようにパケットを受信する:$/) do |table|
+Then(/^各テストホストは次のようにパケットを受信する:$/) do |table|
   table.hashes.each do |each|
-    source = Host.all[each['source host'].to_i - 1]
-    dest = Host.all[each['destination host'].to_i - 1]
-    expect(dest.packets_received_from(source).size).to eq 1
+    step "I successfully run `net_tester show_received_packets host#{each['destination host']} host#{each['source host']}`"
+    step %(the output from "net_tester show_received_packets host#{each['destination host']} host#{each['source host']}" should contain exactly "1")
   end
 end
 
 Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:$/) do |table|
   table.hashes.each do |each|
-    expect(IO.readlines('./log/PacketInLogger.log').any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be true
+    cd('.') do
+      expect(IO.readlines("#{log_dir}/PacketInLogger.log").any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be true
+    end
   end
 end
 
 Then(/^テスト対象の OpenFlow スイッチの次のポートには PacketIn が届かない:$/) do |table|
   table.hashes.each do |each|
-    expect(IO.readlines('./log/PacketInLogger.log').any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false
+    cd('.') do
+      expect(IO.readlines("#{log_dir}/PacketInLogger.log").any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false
+    end
   end
 end

@@ -3,33 +3,31 @@ Feature: イーサネットスイッチをテスト
     Given テスト対象のネットワークにイーサネットスイッチが 1 台
 
   Scenario: ホスト 2 台でパケットを送受信
-    Given テスト用の仮想ホストが 2 台
-    And NetTester を起動
+    And NetTester とテストホスト 2 台を起動
     When 次のパッチを追加:
       | source host | destination port |
       |           1 |                1 |
       |           2 |                2 |
-    When 各テスト用ホストが次のようにパケットを送信:
+    And 各テストホストから次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |
       |           2 |                1 |
-    Then 各テスト用ホストは次のようにパケットを受信する:
+    Then 各テストホストは次のようにパケットを受信する:
       | source host | destination host |
       |           1 |                2 |
       |           2 |                1 |
 
   Scenario: ホスト 3 台でパケットを送受信
-    Given テスト用の仮想ホストが 3 台
-    And NetTester を起動
+    And NetTester とテストホスト 2 台を起動
     When 次のパッチを追加:
       | source host | destination port |
       |           1 |                1 |
       |           2 |                2 |
-    When 各テスト用ホストが次のようにパケットを送信:
+    And 各テストホストから次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |
       |           2 |                1 |
-    Then 各テスト用ホストは次のようにパケットを受信する:
+    Then 各テストホストは次のようにパケットを受信する:
       | source host | destination host |
       |           1 |                2 |
       |           2 |                1 |
