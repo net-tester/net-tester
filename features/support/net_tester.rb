@@ -2,3 +2,4 @@
 require 'net_tester'
 
 include NetTester
+include NetTester::Dir
