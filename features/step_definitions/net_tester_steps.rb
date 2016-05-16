@@ -42,26 +42,26 @@ Given(/^テスト用の物理スイッチの代わりに Open vSwitch を起動�
 end
 
 Given(/^テストホスト (\d+) 台を起動$/) do |nhost|
-  step "I successfully run `net_tester run #{nhost} #{@link.devices.first}`"
+  step "I successfully run `net_tester run --nhost #{nhost} --device #{@link.devices.first}`"
 end
 
 When(/^次のパッチを追加:$/) do |table|
   table.hashes.each do |each|
-    step "I successfully run `net_tester add #{each['source host']} #{each['destination port']}`"
+    step "I successfully run `net_tester add --vport #{each['virtual port']} --port #{each['physical port']}`"
   end
 end
 
 When(/^各テストホストから次のようにパケットを送信:$/) do |table|
   table.hashes.each do |each|
-    step "I successfully run `net_tester send_packet host#{each['source host']} host#{each['destination host']}`"
+    step "I successfully run `net_tester send_packet --source host#{each['source host']} --dest host#{each['destination host']}`"
   end
   sleep 1
 end
 
 Then(/^各テストホストは次のようにパケットを受信する:$/) do |table|
   table.hashes.each do |each|
-    step "I successfully run `net_tester show_received_packets host#{each['destination host']} host#{each['source host']}`"
-    step %(the output from "net_tester show_received_packets host#{each['destination host']} host#{each['source host']}" should contain exactly "1")
+    step "I successfully run `net_tester received_packets --dest host#{each['destination host']} --source host#{each['source host']}`"
+    step %(the output from "net_tester received_packets --dest host#{each['destination host']} --source host#{each['source host']}" should contain exactly "1")
   end
 end
 

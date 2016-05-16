@@ -5,9 +5,9 @@ Feature: パッチング
 
   Scenario: パッチを設定する
     When 次のパッチを追加:
-      | source host | destination port |
-      |           1 |                1 |
-      |           2 |                2 |
+      | virtual port | physical port |
+      |            1 |             1 |
+      |            2 |             2 |
     And 各テストホストから次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |
@@ -19,9 +19,9 @@ Feature: パッチング
 
   Scenario: あえて変なパッチを設定
     When 次のパッチを追加:
-      | source host | destination port |
-      |           1 |                1 |
-      |           2 |                1 |
+      | virtual port | physical port |
+      |            1 |             1 |
+      |            2 |             1 |
     And 各テストホストから次のようにパケットを送信:
       | source host | destination host |
       |           1 |                2 |

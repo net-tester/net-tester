@@ -2,6 +2,10 @@
 # frozen_string_literal: true
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'rubygems'
+require 'bundler'
+Bundler.setup :default
+
 require 'active_support/core_ext/array/access'
 require 'faker'
 require 'gli'
@@ -12,24 +16,30 @@ module NetTester
   # net_tester command
   module App
     extend GLI::App
+    extend NetTester::Dir
     include NetTester
 
     desc 'Runs NetTester'
-    arg_name 'nhost device'
     command :run do |c|
-      c.action do |_global_options, _options, args|
-        log_dir = './log'
-        pid_dir = './tmp/pids'
-        socket_dir = './tmp/sockets'
-        controller_file = File.expand_path File.join(__dir__, '..', 'lib', 'net_tester', 'controller.rb')
+      c.desc 'number of virtual hosts'
+      c.flag [:n, :nhost]
+      c.desc 'device name that virtual hosts use'
+      c.flag [:D, :device]
 
-        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{args.first.to_i}") || raise('Failed to start NetTester')
+      c.action do |_global_options, options, _args|
+        raise '--nhost option is mandatory' if options[:nhost].nil?
+        raise '--device option is mandatory' if options[:device].nil?
+
+        nhost = options[:nhost].to_i
+        controller_file = File.expand_path File.join(__dir__, '..', 'lib', 'net_tester', 'controller.rb')
+        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{nhost}") || raise('Failed to start NetTester')
 
         @test_switch = TestSwitch.create(dpid: 0xabc)
-        ip_address = Array.new(args.first.to_i) { Faker::Internet.ip_v4_address }
-        mac_address = Array.new(args.first.to_i) { Faker::Internet.mac_address }
+
+        ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
+        mac_address = Array.new(nhost) { Faker::Internet.mac_address }
         arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
-        args.first.to_i.times do |host_id|
+        nhost.times do |host_id|
           link = Link.create
           Host.create(name: "host#{host_id + 1}",
                       ip_address: ip_address[host_id],
@@ -38,41 +48,58 @@ module NetTester
                       arp_entries: arp_entries)
           @test_switch.add_port(link.devices.second)
         end
-        @test_switch.add_port(args.second)
+        @test_switch.add_port(options[:device])
       end
     end
 
     desc 'Add a patch'
-    arg_name 'source_port destination_port'
     command :add do |c|
-      c.action do |_global_options, _options, args|
-        socket_dir = './tmp/sockets'
-        Trema.trema_process('NetTester', socket_dir).controller.create_patch(args.first.to_i, args.second.to_i)
+      c.desc 'port number of virtual switch'
+      c.flag [:vport]
+      c.desc 'port number of physical switch'
+      c.flag [:port]
+
+      c.action do |_global_options, options, _args|
+        raise '--vport option is mandatory' if options[:vport].nil?
+        raise '--port option is mandatory' if options[:port].nil?
+
+        Trema.trema_process('NetTester', socket_dir).controller
+             .create_patch(options[:vport].to_i, options[:port].to_i)
       end
     end
 
     desc 'Send packet'
-    arg_name 'source_host destination_host'
     command :send_packet do |c|
-      c.action do |_global_options, _options, args|
-        source = Host.all.find { |each| each.name == args.first }
-        dest = Host.all.find { |each| each.name == args.second }
+      c.desc 'host that sends packets'
+      c.flag [:s, :source]
+      c.desc 'host that receives packets'
+      c.flag [:d, :dest]
+
+      c.action do |_global_options, options, _args|
+        raise '--source option is mandatory' if options[:source].nil?
+        raise '--dest option is mandatory' if options[:dest].nil?
+
+        source = Host.find_by(name: options[:source])
+        dest = Host.find_by(name: options[:dest])
         source.send_packet(dest)
       end
     end
 
     desc 'Show received packets'
-    arg_name 'dest_host source_host'
-    command :show_received_packets do |c|
-      c.action do |_global_options, _options, args|
-        dest = Host.all.find { |each| each.name == args.first }
-        source = Host.all.find { |each| each.name == args.second }
+    command :received_packets do |c|
+      c.desc 'host that sends packets'
+      c.flag [:s, :source]
+      c.desc 'host that receives packets'
+      c.flag [:d, :dest]
+
+      c.action do |_global_options, options, _args|
+        raise '--source option is mandatory' if options[:source].nil?
+        raise '--dest option is mandatory' if options[:dest].nil?
+
+        dest = Host.find_by(name: options[:dest])
+        source = Host.find_by(name: options[:source])
         puts dest.packets_received_from(source).size
       end
-    end
-
-    on_error do |e|
-      raise e
     end
 
     exit run(ARGV)

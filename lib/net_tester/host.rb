@@ -20,7 +20,7 @@ module NetTester
     end
 
     def self.all
-      Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).map do |each|
+      ::Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).map do |each|
         vhost = DRbObject.new_with_uri("drbunix:#{each}")
         new(name: vhost.name,
             ip_address: vhost.ip_address,
@@ -29,12 +29,18 @@ module NetTester
       end
     end
 
+    def self.find_by(queries)
+      queries.inject(all) do |memo, (attr, value)|
+        memo.find_all { |each| each.__send__(attr) == value }
+      end.first
+    end
+
     def self.create(*args)
       new(*args).tap(&:start)
     end
 
     def self.destroy_all(socket_dir:)
-      Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).each do |each|
+      ::Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).each do |each|
         /vhost\.(\S+)\.ctl/=~ each
         system "vhost stop -n #{Regexp.last_match(1)} -S #{socket_dir}"
       end
