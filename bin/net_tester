@@ -25,6 +25,8 @@ module NetTester
       c.flag [:n, :nhost]
       c.desc 'device name that virtual hosts use'
       c.flag [:D, :device]
+      c.desc 'VLAN ID set to each host'
+      c.flag [:vlan]
 
       c.action do |_global_options, options, _args|
         raise '--nhost option is mandatory' if options[:nhost].nil?
@@ -32,7 +34,7 @@ module NetTester
 
         nhost = options[:nhost].to_i
         controller_file = File.expand_path File.join(__dir__, '..', 'lib', 'net_tester', 'controller.rb')
-        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{nhost}") || raise('Failed to start NetTester')
+        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{nhost} #{options[:vlan]}") || raise('Failed to start NetTester')
 
         @test_switch = TestSwitch.create(dpid: 0xabc)
 
@@ -40,13 +42,15 @@ module NetTester
         mac_address = Array.new(nhost) { Faker::Internet.mac_address }
         arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
         nhost.times do |host_id|
-          link = Link.create
-          Host.create(name: "host#{host_id + 1}",
+          host_name = "host#{host_id + 1}"
+          port_name = "port#{host_id + 1}"
+          link = Link.create(host_name, port_name)
+          Host.create(name: host_name,
                       ip_address: ip_address[host_id],
                       mac_address: mac_address[host_id],
-                      device: link.devices.first,
+                      device: link.device(host_name),
                       arp_entries: arp_entries)
-          @test_switch.add_port(link.devices.second)
+          @test_switch.add_port(link.device(port_name))
         end
         @test_switch.add_port(options[:device])
       end
@@ -63,8 +67,9 @@ module NetTester
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
 
+        mac_address = Host.find_by(name: "host#{options[:vport]}").mac_address
         Trema.trema_process('NetTester', socket_dir).controller
-             .create_patch(options[:vport].to_i, options[:port].to_i)
+             .create_patch(options[:vport].to_i, mac_address, options[:port].to_i)
       end
     end
 

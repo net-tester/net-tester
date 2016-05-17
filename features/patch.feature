@@ -5,30 +5,30 @@ Feature: パッチング
 
   Scenario: パッチを設定する
     When 次のパッチを追加:
-      | virtual port | physical port |
+      | Virtual Port | Physical Port |
       |            1 |             1 |
       |            2 |             2 |
     And 各テストホストから次のようにパケットを送信:
-      | source host | destination host |
+      | Source Host | Destination Host |
       |           1 |                2 |
       |           2 |                1 |
-    Then テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:
-      | port |
+    Then テスト対象の OpenFlow スイッチに次の PacketIn が届く:
+      | Port |
       |    1 |
       |    2 |
 
   Scenario: あえて変なパッチを設定
     When 次のパッチを追加:
-      | virtual port | physical port |
+      | Virtual Port | Physical Port |
       |            1 |             1 |
       |            2 |             1 |
     And 各テストホストから次のようにパケットを送信:
-      | source host | destination host |
+      | Source Host | Destination Host |
       |           1 |                2 |
       |           2 |                1 |
-    Then テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:
-      | port |
+    Then テスト対象の OpenFlow スイッチに次の PacketIn が届く:
+      | Port |
       |    1 |
-    And テスト対象の OpenFlow スイッチの次のポートには PacketIn が届かない:
-      | port |
+    And テスト対象の OpenFlow スイッチに次の PacketIn は届かない:
+      | Port |
       |    2 |

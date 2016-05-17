@@ -1,30 +1,47 @@
 # frozen_string_literal: true
-require 'phut/null_logger'
-require 'phut/virtual_link'
+require 'net_tester/virtual_link'
 require 'net_tester/sh'
 
 module NetTester
   # Virtual link
   class Link
+    LINK_DEVICE_PREFIX = 'lnk'
+
     extend Sh
 
     def self.all
-      sh('ifconfig -a').split("\n").select { |each| /^link\d+-1/=~ each }.map do |each|
-        /^link(\d+)-1/=~ each
-        new(index: Regexp.last_match(1).to_i)
+      link = Hash.new { [] }
+      devices.each do |each|
+        /^#{LINK_DEVICE_PREFIX}(\d+)_(\S+)/ =~ each
+        link[Regexp.last_match(1).to_i] += [Regexp.last_match(2)]
       end
+      link.map { |link_id, names| new(*names, link_id: link_id) }
     end
 
-    def self.create
-      new.start
+    def self.devices
+      sh('LANG=C ifconfig -a').split("\n").map do |each|
+        /^(#{LINK_DEVICE_PREFIX}\d+_\S+)/ =~ each ? Regexp.last_match(1) : nil
+      end.compact
+    end
+
+    def self.create(name_a, name_b)
+      new(name_a, name_b).start
     end
 
     def self.destroy_all
       all.each(&:destroy)
     end
 
-    def initialize(index: Link.all.size)
-      @link = Phut::VirtualLink.new("link#{index}-1", "link#{index}-2", Phut::NullLogger.new)
+    def initialize(name_a, name_b, link_id: Link.all.size)
+      @link = VirtualLink.new(device_name(link_id, name_a),
+                              device_name(link_id, name_b))
+      @device = [name_a, name_b].each_with_object({}) do |each, hash|
+        hash[each.to_sym] = device_name(link_id, each)
+      end
+    end
+
+    def device(name)
+      @device[name.to_sym]
     end
 
     def start
@@ -36,8 +53,10 @@ module NetTester
       @link.stop
     end
 
-    def devices
-      [@link.device_a, @link.device_b]
+    private
+
+    def device_name(link_id, name)
+      "#{LINK_DEVICE_PREFIX}#{link_id}_#{name}"
     end
   end
 end
