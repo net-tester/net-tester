@@ -35,6 +35,12 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 * --vport: 仮想スイッチのポート番号
 * --port: 物理スイッチのポート番号
 
+```shellsession
+./bin/net_tester add --vport 2 --port 1
+```
+
+![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/add_example.png)
+
 ## net_tester send_packet [オプション]
 パケットを送信する
 
