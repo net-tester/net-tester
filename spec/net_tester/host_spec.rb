@@ -35,7 +35,7 @@ module NetTester
       end
 
       context 'with a link device' do
-        Given(:device) { Link.create.devices.first }
+        Given(:device) { Link.create('a', 'b').device('a') }
         Then { Host.all.size == 1 }
         Then { host.name == 'myhost' }
         Then { host.device == device }

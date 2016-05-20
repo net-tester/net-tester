@@ -21,7 +21,7 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 ## net_tester run [オプション]
 
 * --nhost: 起動する仮想ホストの台数
-* --device: 仮想ホストが使うデバイス名
+* --device: 仮想スイッチが使うデバイス名
 
 ## net_tester add [オプション]
 パッチを追加する
