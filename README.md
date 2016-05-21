@@ -19,6 +19,7 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 # コマンド一覧
 
 ## net_tester run [オプション]
+NetTester を起動する
 
 * --nhost: 起動する仮想ホストの台数
 * --device: 仮想スイッチが使うデバイス名
@@ -52,3 +53,6 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 
 * --source: 送信元ホスト名
 * --dest: 宛先ホスト名
+
+## net_tester kill
+NetTester を停止する

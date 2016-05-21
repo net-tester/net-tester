@@ -6,8 +6,10 @@ require 'net_tester/link'
 
 module NetTester
   describe Host do
+    include Dir
+
     def destroy_all_host
-      Dir.glob(File.join('./tmp/sockets', 'vhost.*.ctl')).each do |each|
+      ::Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).each do |each|
         DRbObject.new_with_uri("drbunix:#{each}").stop
       end
     end

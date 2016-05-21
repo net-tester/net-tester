@@ -10,6 +10,7 @@ require 'active_support/core_ext/array/access'
 require 'faker'
 require 'gli'
 require 'net_tester'
+require 'net_tester/command'
 require 'trema'
 
 module NetTester
@@ -104,6 +105,13 @@ module NetTester
         dest = Host.find_by(name: options[:dest])
         source = Host.find_by(name: options[:source])
         puts dest.packets_received_from(source).size
+      end
+    end
+
+    desc 'Kills NetTester'
+    command :kill do |c|
+      c.action do |_global_options, _options, _args|
+        Command.kill
       end
     end
 
