@@ -68,9 +68,7 @@ module NetTester
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
 
-        mac_address = Host.find_by(name: "host#{options[:vport]}").mac_address
-        Trema.trema_process('NetTester', socket_dir).controller
-             .create_patch(options[:vport].to_i, mac_address, options[:port].to_i)
+        Command.add options[:vport].to_i, options[:port].to_i
       end
     end
 
@@ -84,6 +82,7 @@ module NetTester
       c.action do |_global_options, options, _args|
         raise '--source option is mandatory' if options[:source].nil?
         raise '--dest option is mandatory' if options[:dest].nil?
+
         Command.send_packet(options[:source], options[:dest])
       end
     end
