@@ -13,7 +13,37 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 
 # テストシナリオの書き方
 
-(そのうち書く。まずは ool-l1patch のシナリオを RSpec に移植)
+```cucumber
+Feature: パッチング
+  Scenario: パッチを設定してテストホスト同士で通信
+    Given テスト対象のイーサネットスイッチ 1 台
+    And DPID が 0xdef のテスト用物理スイッチ 1 台
+    And NetTester とテストホスト 2 台を起動
+    When 次のパッチを追加:
+      | Virtual Port | Physical Port |
+      |            1 |             1 |
+      |            2 |             2 |
+    And 各テストホストから次のようにパケットを送信:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+    Then 各テストホストは次のようにパケットを受信する:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+```
+
+## Teardown
+
+```ruby
+# features/support/hooks.rb
+After do
+  cd('.') do
+    NetTester::Command.kill
+    Trema.kill_all
+  end
+end
+```
 
 
 # コマンド一覧
