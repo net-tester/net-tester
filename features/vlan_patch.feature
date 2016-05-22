@@ -5,7 +5,7 @@ Feature: パッチに VLAN タグを指定
       | Host | VLAN ID |
       |    1 |     100 |
       |    2 |     200 |
-  
+
   Scenario: 仮想ポートに VLAN ID を指定してパッチを作る
     When 次のパッチを追加:
       | Virtual Port | Physical Port |

@@ -67,7 +67,9 @@ end
 
 When(/^各テストホストから次のようにパケットを送信:$/) do |table|
   table.hashes.each do |each|
-    step "I successfully run `net_tester send_packet --source host#{each['Source Host']} --dest host#{each['Destination Host']}`"
+    cd('.') do
+      NetTester::Command.send_packet("host#{each['Source Host']}", "host#{each['Destination Host']}")
+    end
   end
   sleep 1
 end
