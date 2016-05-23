@@ -1,7 +1,10 @@
 Feature: パッチング
   Background:
-    Given テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチを起動
+    Given テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ
+    And DPID が 0xdef のテスト用物理スイッチ
+    And テスト対象のスイッチとテスト用物理スイッチをリンク 2 本で接続
     And NetTester とテストホスト 2 台を起動
+    And NetTester サーバとテスト用物理スイッチをリンクで接続
 
   Scenario: パッチを設定する
     When 次のパッチを追加:

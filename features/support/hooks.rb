@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 After do
-  cd('.') do
-    NetTester::Command.kill
-    # FIXME: Trema.kill_all
-    begin
-      Trema.trema_process('LearningSwitch', socket_dir).killall
-    rescue
-      true
-    end
-    begin
+  NetTester::Command.kill
+
+  # FIXME: Trema.kill_all
+  begin
+    Trema.trema_process('LearningSwitch', socket_dir).killall
+  rescue
+    true
+  end
+  begin
+    Dir.chdir 'tmp/aruba' do
       Trema.trema_process('PacketInLogger', socket_dir).killall
-    rescue
-      true
     end
+  rescue DRb::DRbConnError
+    true
   end
 end

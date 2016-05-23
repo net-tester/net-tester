@@ -6,19 +6,13 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup :default
 
-require 'active_support/core_ext/array/access'
-require 'faker'
 require 'gli'
-require 'net_tester'
 require 'net_tester/command'
-require 'trema'
 
 module NetTester
   # net_tester command
   module App
     extend GLI::App
-    extend NetTester::Dir
-    include NetTester
 
     desc 'Runs NetTester'
     command :run do |c|
@@ -33,27 +27,7 @@ module NetTester
         raise '--nhost option is mandatory' if options[:nhost].nil?
         raise '--device option is mandatory' if options[:device].nil?
 
-        nhost = options[:nhost].to_i
-        controller_file = File.expand_path File.join(__dir__, '..', 'lib', 'net_tester', 'controller.rb')
-        system("bundle exec trema run #{controller_file} -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon -- #{nhost} #{options[:vlan]}") || raise('Failed to start NetTester')
-
-        @test_switch = TestSwitch.create(dpid: 0xabc)
-
-        ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
-        mac_address = Array.new(nhost) { Faker::Internet.mac_address }
-        arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
-        nhost.times do |host_id|
-          host_name = "host#{host_id + 1}"
-          port_name = "port#{host_id + 1}"
-          link = Link.create(host_name, port_name)
-          Host.create(name: host_name,
-                      ip_address: ip_address[host_id],
-                      mac_address: mac_address[host_id],
-                      device: link.device(host_name),
-                      arp_entries: arp_entries)
-          @test_switch.add_port(link.device(port_name))
-        end
-        @test_switch.add_port(options[:device])
+        Command.run options[:device], options[:nhost].to_i, options[:vlan]
       end
     end
 
@@ -83,7 +57,7 @@ module NetTester
         raise '--source option is mandatory' if options[:source].nil?
         raise '--dest option is mandatory' if options[:dest].nil?
 
-        Command.send_packet(options[:source], options[:dest])
+        Command.send_packet options[:source], options[:dest]
       end
     end
 
@@ -98,9 +72,7 @@ module NetTester
         raise '--source option is mandatory' if options[:source].nil?
         raise '--dest option is mandatory' if options[:dest].nil?
 
-        dest = Host.find_by(name: options[:dest])
-        source = Host.find_by(name: options[:source])
-        puts dest.packets_received_from(source).size
+        Command.packets_received(options[:dest], options[:source])
       end
     end
 
