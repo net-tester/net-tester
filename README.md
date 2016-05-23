@@ -53,9 +53,10 @@ NetTester を起動する
 
 * --nhost: 起動する仮想ホストの台数
 * --device: 仮想スイッチが使うデバイス名
+* --vlan: 仮想ホストからのパケットに付ける VLAN ID
 
 ```shellsession
-./bin/net_tester run --nhost 3 --device eth0
+./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
 ```
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/run_example.png)
