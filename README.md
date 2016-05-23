@@ -59,7 +59,7 @@ NetTester を起動する
 ./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
 ```
 
-![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/run_example.png)
+![network](https://raw.githubusercontent.com/yasuhito/net_tester/feature/cucumber_readme/img/run_example.png)
 
 ## net_tester add [オプション]
 パッチを追加する
