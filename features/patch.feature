@@ -1,10 +1,20 @@
 Feature: パッチング
   Background:
-    Given テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ
-    And DPID が 0xdef のテスト用物理スイッチ
-    And テスト対象のスイッチとテスト用物理スイッチをリンク 2 本で接続
-    And NetTester とテストホスト 2 台を起動
-    And NetTester サーバとテスト用物理スイッチをリンクで接続
+    Given テストホスト 2 台を起動
+    And NetTester を起動
+    And テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ
+    And DPID が 0xdef の NetTester 物理スイッチ
+    And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
+      | Physical Port | Testee Port |
+      |             1 |           1 |
+      |             2 |           2 |
+    And テストホストと NetTester 仮想スイッチを次のように接続:
+      | Test Host | Virtual Port |
+      |         1 |            1 |
+      |         2 |            2 |
+    And NetTester 仮想スイッチと物理スイッチを次のように接続
+      | Virtual Port | Physical Port |
+      |            3 |             3 |
 
   Scenario: パッチを設定する
     When 次のパッチを追加:

@@ -46,6 +46,11 @@ module NetTester
       sudo "ovs-vsctl add-port #{bridge_name} #{device}"
     end
 
+    def add_numbered_port(port_number, device)
+      add_port device
+      sudo "ovs-vsctl set Port #{device} other_config:rstp-port-num=#{port_number}"
+    end
+
     def ports
       sudo("ovs-vsctl list-ports #{bridge_name}").split
     end

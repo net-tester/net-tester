@@ -1,8 +1,10 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-def debug_flow(dpid)
-  $stderr.puts `sudo ovs-ofctl dump-flows nts#{dpid} -O OpenFlow10`
+def debug_ovs(name)
+  $stderr.puts "Switch #{name}"
+  $stderr.puts `sudo ovs-ofctl dump-flows #{name} -O OpenFlow10`
+  $stderr.puts `sudo ovs-ofctl show #{name}`
 end
 
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
@@ -14,7 +16,7 @@ Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow �
   end
 end
 
-Given(/^DPID が (\S+) のテスト用物理スイッチ$/) do |dpid|
+Given(/^DPID が (\S+) の NetTester 物理スイッチ$/) do |dpid|
   @physical_test_switch = PhysicalTestSwitch.create(dpid: dpid.hex)
 end
 
@@ -29,13 +31,52 @@ Given(/^テスト対象のスイッチとテスト用物理スイッチをリン
   end
 end
 
+Given(/^NetTester 物理スイッチとテスト対象のスイッチを次のように接続:$/) do |table|
+  table.hashes.each do |each|
+    pport_id = each['Physical Port'].to_i
+    tport_id = each['Testee Port'].to_i
+    port_name = "pport#{pport_id}"
+    tport_name = "tport#{tport_id}"
+    link = Link.create(tport_name, port_name)
+    @physical_test_switch.add_numbered_port(pport_id, link.device(port_name))
+    # FIXME: Switch.find_by(name: testee_switch.name).add_port ...
+    Switch.all.first.add_numbered_port tport_id, link.device(tport_name)
+  end
+end
+
+Given(/^テストホスト (\d+) 台を起動$/) do |nhost|
+  @nhost = nhost.to_i
+  NetTester::Command.run_host @nhost
+end
+
+Given(/^NetTester を起動$/) do
+  raise 'test host is not running' unless @nhost
+  NetTester::Command.run @nhost
+end
+
 Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
   @main_link = Link.create('ssw', 'psw')
   NetTester::Command.run(@main_link.device(:ssw), nhost.to_i)
 end
 
+Given(/^テストホストと NetTester 仮想スイッチを次のように接続:$/) do |table|
+  table.hashes.each do |each|
+    NetTester::Command.connect_host(host_id: each['Test Host'],
+                                    port_number: each['Virtual Port'].to_i)
+  end
+end
+
 Given(/^NetTester サーバとテスト用物理スイッチをリンクで接続$/) do
   @physical_test_switch.add_port(@main_link.device(:psw))
+end
+
+Given(/^NetTester 仮想スイッチと物理スイッチを次のように接続$/) do |table|
+  # FIXME: リンクは一本だけなので each しない
+  table.hashes.each do |each|
+    main_link = Link.create('ssw', 'psw')
+    NetTester::Command.connect_switch(device: main_link.device(:ssw), port_number: each['Virtual Port'].to_i)
+    @physical_test_switch.add_numbered_port(each['Physical Port'].to_i, main_link.device(:psw))
+  end
 end
 
 Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
