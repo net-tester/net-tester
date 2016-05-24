@@ -1,32 +1,7 @@
 # frozen_string_literal: true
-task default: [:cucumber, :spec, :rubocop]
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new
-rescue LoadError
-  task :spec do
-    $stderr.puts 'RSpec is disabled'
-  end
-end
+require File.expand_path('../config/application', __FILE__)
 
-begin
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new
-rescue LoadError
-  task :cucumber do
-    $stderr.puts 'Cucumber is disabled'
-  end
-  task 'cucumber:travis' do
-    $stderr.puts 'Cucumber is disabled'
-  end
-end
-
-begin
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new
-rescue LoadError
-  task :rubocop do
-    $stderr.puts 'RuboCop is disabled'
-  end
-end
+Rails.application.load_tasks

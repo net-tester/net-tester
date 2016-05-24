@@ -1,7 +1,17 @@
+Rails:
+  Enabled: true
+
 AllCops:
   TargetRubyVersion: 2.3
   Exclude:
+    - bin/*
+    - config/**/*
     - tmp/**/*
     - vendor/**/*
+
+HashSyntax:
+  EnforcedStyle: ruby19
+  Exclude:
+    - lib/tasks/*.rake
 
 inherit_from: .rubocop_todo.yml
