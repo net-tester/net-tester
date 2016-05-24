@@ -7,6 +7,10 @@ def debug_ovs(name)
   $stderr.puts `sudo ovs-ofctl show #{name}`
 end
 
+Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
+  NetTester::Command.run nhost.to_i
+end
+
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
   Switch.create(dpid: 0x1, port: 6654)
   # TODO: cucumber/aruba でも project_root/log と project_root/tmp/{sockets,pids} を使うようにすればよい?
@@ -42,21 +46,6 @@ Given(/^NetTester 物理スイッチとテスト対象のスイッチを次の�
     # FIXME: Switch.find_by(name: testee_switch.name).add_port ...
     Switch.all.first.add_numbered_port tport_id, link.device(tport_name)
   end
-end
-
-Given(/^テストホスト (\d+) 台を起動$/) do |nhost|
-  @nhost = nhost.to_i
-  NetTester::Command.run_host @nhost
-end
-
-Given(/^NetTester を起動$/) do
-  raise 'test host is not running' unless @nhost
-  NetTester::Command.run @nhost
-end
-
-Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
-  @main_link = Link.create('ssw', 'psw')
-  NetTester::Command.run(@main_link.device(:ssw), nhost.to_i)
 end
 
 Given(/^テストホストと NetTester 仮想スイッチを次のように接続:$/) do |table|

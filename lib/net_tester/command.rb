@@ -19,28 +19,21 @@ module NetTester
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
       sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{nhost}"
       @@test_switch = TestSwitch.create(dpid: 0xabc)
-    end
 
-    def self.run_host(nhost)
-      @@host_peer_device = {}
       ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
       mac_address = Array.new(nhost) { Faker::Internet.mac_address }
       arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
-      nhost.times do |host_id|
-        host_name = "host#{host_id + 1}"
-        port_name = "port#{host_id + 1}"
+      1.upto(nhost).each do |each|
+        host_name = "host#{each}"
+        port_name = "port#{each}"
         link = Link.create(host_name, port_name)
         Host.create(name: host_name,
-                    ip_address: ip_address[host_id],
-                    mac_address: mac_address[host_id],
+                    ip_address: ip_address[each - 1],
+                    mac_address: mac_address[each - 1],
                     device: link.device(host_name),
                     arp_entries: arp_entries)
-        @@host_peer_device[host_name] = link.device(port_name)
+        @@test_switch.add_numbered_port each, link.device(port_name)
       end
-    end
-
-    def self.connect_host(host_id:, port_number:)
-      @@test_switch.add_numbered_port port_number, @@host_peer_device["host#{host_id}"]
     end
 
     def self.connect_switch(device:, port_number:)
