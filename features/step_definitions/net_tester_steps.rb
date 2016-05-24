@@ -112,7 +112,7 @@ Then(/^各テストホストは次のようにパケットを受信する:$/) do
   end
 end
 
-Then(/^テスト対象の OpenFlow スイッチに次の PacketIn が届く:$/) do |table|
+Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:$/) do |table|
   table.hashes.each do |each|
     if each['VLAN ID']
       step %(the file "#{File.join log_dir, 'PacketInLogger.log'}" should contain "PACKET_IN: Port = #{each['Port']}, VLAN ID = #{each['VLAN ID']}")
@@ -122,7 +122,7 @@ Then(/^テスト対象の OpenFlow スイッチに次の PacketIn が届く:$/) 
   end
 end
 
-Then(/^テスト対象の OpenFlow スイッチに次の PacketIn は届かない:$/) do |table|
+Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn は届かない:$/) do |table|
   table.hashes.each do |each|
     cd('.') do
       expect(IO.readlines("#{log_dir}/PacketInLogger.log").any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false

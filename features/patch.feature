@@ -20,7 +20,7 @@ Feature: パッチング
       | Source Host | Destination Host |
       |           1 |                2 |
       |           2 |                1 |
-    Then テスト対象の OpenFlow スイッチに次の PacketIn が届く:
+    Then テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:
       | Port |
       |    1 |
       |    2 |
@@ -34,9 +34,9 @@ Feature: パッチング
       | Source Host | Destination Host |
       |           1 |                2 |
       |           2 |                1 |
-    Then テスト対象の OpenFlow スイッチに次の PacketIn が届く:
+    Then テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:
       | Port |
       |    1 |
-    And テスト対象の OpenFlow スイッチに次の PacketIn は届かない:
+    And テスト対象の OpenFlow スイッチの次のポートに PacketIn は届かない:
       | Port |
       |    2 |
