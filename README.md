@@ -13,6 +13,12 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 
 # テストシナリオの書き方
 
+## テスト構成例
+
+![test_scenario](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/test_scenario.png)
+
+## Cucumber シナリオ
+
 ```cucumber
 Feature: ポート 1 とポート 2 でパケットを送受信
 
@@ -36,7 +42,7 @@ Feature: ポート 1 とポート 2 でパケットを送受信
       |           2 |                1 |
 ```
 
-## Teardown
+### Teardown
 
 ```ruby
 # features/support/hooks.rb
