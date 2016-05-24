@@ -4,7 +4,9 @@ After do
 
   # FIXME: Trema.kill_all
   begin
-    Trema.trema_process('LearningSwitch', socket_dir).killall
+    Dir.chdir 'tmp/aruba' do
+      Trema.trema_process('LearningSwitch', socket_dir).killall
+    end
   rescue DRb::DRbConnError
     true
   rescue

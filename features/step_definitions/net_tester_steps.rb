@@ -11,6 +11,13 @@ Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
   NetTester::Command.run nhost.to_i
 end
 
+Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
+  vlan_option = + table.hashes.map do |each|
+    each['Host'] + ':' + each['VLAN ID']
+  end.join(',')
+  NetTester::Command.run nhost.to_i, vlan_option
+end
+
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
   Switch.create(dpid: 0x1, port: 6654)
   # TODO: cucumber/aruba でも project_root/log と project_root/tmp/{sockets,pids} を使うようにすればよい?
@@ -73,23 +80,6 @@ Given(/^NetTester 仮想スイッチと物理スイッチを次のように接�
     NetTester::Command.connect_switch(device: main_link.device(:ssw), port_number: each['Virtual Port'].to_i)
     @physical_test_switch.add_numbered_port(each['Physical Port'].to_i, main_link.device(:psw))
   end
-end
-
-Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
-  splink = Link.create('ssw', 'psw')
-  vlan_option = + table.hashes.map do |each|
-    each['Host'] + ':' + each['VLAN ID']
-  end.join(',')
-  step "I successfully run `net_tester run --nhost #{nhost} --vlan #{vlan_option} --device #{splink.device(:ssw)}`"
-  physical_test_switch = PhysicalTestSwitch.create(dpid: 0xdef)
-  nhost.to_i.times do |each|
-    tport_name = "tport#{each + 1}"
-    port_name = "pport#{each + 1}"
-    link = Link.create(tport_name, port_name)
-    physical_test_switch.add_port(link.device(port_name))
-    Switch.all.first.add_port link.device(tport_name)
-  end
-  physical_test_switch.add_port(splink.device(:psw))
 end
 
 When(/^次のパッチを追加:$/) do |table|

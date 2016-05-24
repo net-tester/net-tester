@@ -15,7 +15,6 @@ class NetTesterController < Trema::Controller
     logger.info "Switch #{dpid.to_hex} connected"
   end
 
-  # rubocop:disable AbcSize
   # rubocop:disable MethodLength
   def create_patch(host_port, mac_address, dest_port)
     logger.info "New patch: #{host_port}, #{mac_address}, #{dest_port}, #{@vlan[host_port]}"
@@ -40,6 +39,5 @@ class NetTesterController < Trema::Controller
                       match: Match.new(in_port: dest_port),
                       actions: SendOutPort.new(@nhost + 1))
   end
-  # rubocop:enable AbcSize
   # rubocop:enable MethodLength
 end
