@@ -20,6 +20,13 @@ Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow �
   end
 end
 
+Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
+  Switch.create(dpid: 0x1, port: 6654)
+  cd('.') do
+    step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
+  end
+end
+
 Given(/^DPID が (\S+) の NetTester 物理スイッチ$/) do |dpid|
   @physical_test_switch = PhysicalTestSwitch.create(dpid: dpid.hex)
 end
@@ -83,13 +90,6 @@ Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起�
     Switch.all.first.add_port link.device(tport_name)
   end
   physical_test_switch.add_port(splink.device(:psw))
-end
-
-Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
-  Switch.create(dpid: 0x1, port: 6654)
-  cd('.') do
-    step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
-  end
 end
 
 When(/^次のパッチを追加:$/) do |table|

@@ -5,6 +5,8 @@ After do
   # FIXME: Trema.kill_all
   begin
     Trema.trema_process('LearningSwitch', socket_dir).killall
+  rescue DRb::DRbConnError
+    true
   rescue
     true
   end
@@ -13,6 +15,8 @@ After do
       Trema.trema_process('PacketInLogger', socket_dir).killall
     end
   rescue DRb::DRbConnError
+    true
+  rescue
     true
   end
 end
