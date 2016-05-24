@@ -14,10 +14,13 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 # テストシナリオの書き方
 
 ```cucumber
-Feature: パッチング
-  Scenario: パッチを設定してテストホスト同士で通信
-    Given テスト対象のイーサネットスイッチ 1 台
-    And DPID が 0xdef のテスト用物理スイッチ 1 台
+Feature: ポート 1 とポート 2 でパケットを送受信
+
+  ネットワークのポート 1 番とポート 2 番に接続したホスト同士で
+  パケットを送受信できる
+
+  Scenario: ポート 1 番とポート 2 番でパケットを送受信
+    Given DPID が 0xdef の NetTester 物理スイッチ
     And NetTester とテストホスト 2 台を起動
     When 次のパッチを追加:
       | Virtual Port | Physical Port |
@@ -38,10 +41,7 @@ Feature: パッチング
 ```ruby
 # features/support/hooks.rb
 After do
-  cd('.') do
-    NetTester::Command.kill
-    Trema.kill_all
-  end
+  NetTester::Command.kill
 end
 ```
 
