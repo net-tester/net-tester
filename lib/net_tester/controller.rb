@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class NetTester < Trema::Controller
+class NetTesterController < Trema::Controller
   include Pio::OpenFlow10 # FIXME
 
   def start(args)
@@ -8,9 +8,13 @@ class NetTester < Trema::Controller
       host_id, vlan_id = each.split(':').map(&:to_i)
       hash[host_id] = vlan_id
     end
+    logger.info "#{name} started: nhost = #{@nhost}, vlan = #{@vlan}"
   end
 
-  # rubocop:disable AbcSize
+  def switch_ready(dpid)
+    logger.info "Switch #{dpid.to_hex} connected"
+  end
+
   # rubocop:disable MethodLength
   def create_patch(host_port, mac_address, dest_port)
     logger.info "New patch: #{host_port}, #{mac_address}, #{dest_port}, #{@vlan[host_port]}"
@@ -35,6 +39,5 @@ class NetTester < Trema::Controller
                       match: Match.new(in_port: dest_port),
                       actions: SendOutPort.new(@nhost + 1))
   end
-  # rubocop:enable AbcSize
   # rubocop:enable MethodLength
 end

@@ -13,7 +13,43 @@ NetTesterの最小構成は、一台のLinuxマシンと物理スイッチから
 
 # テストシナリオの書き方
 
-(そのうち書く。まずは ool-l1patch のシナリオを RSpec に移植)
+## テスト構成例
+
+![test_scenario](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/test_scenario.png)
+
+## Cucumber シナリオ
+
+```cucumber
+Feature: ポート 1 とポート 2 でパケットを送受信
+
+  ネットワークのポート 1 番とポート 2 番に接続したホスト同士で
+  パケットを送受信できる
+
+  Scenario: ポート 1 番とポート 2 番でパケットを送受信
+    Given DPID が 0xdef の NetTester 物理スイッチ
+    And NetTester とテストホスト 2 台を起動
+    When 次のパッチを追加:
+      | Virtual Port | Physical Port |
+      |            1 |             1 |
+      |            2 |             2 |
+    And 各テストホストから次のようにパケットを送信:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+    Then 各テストホストは次のようにパケットを受信する:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+```
+
+### Teardown
+
+```ruby
+# features/support/hooks.rb
+After do
+  NetTester::Command.kill
+end
+```
 
 
 # コマンド一覧
@@ -23,12 +59,13 @@ NetTester を起動する
 
 * --nhost: 起動する仮想ホストの台数
 * --device: 仮想スイッチが使うデバイス名
+* --vlan: 仮想ホストからのパケットに付ける VLAN ID
 
 ```shellsession
-./bin/net_tester run --nhost 3 --device eth0
+./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
 ```
 
-![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/run_example.png)
+![network](https://raw.githubusercontent.com/yasuhito/net_tester/feature/cucumber_readme/img/run_example.png)
 
 ## net_tester add [オプション]
 パッチを追加する
