@@ -13,7 +13,7 @@ end
 
 Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
   vlan_option = + table.hashes.map do |each|
-    each['Host'] + ':' + each['VLAN ID']
+    "host#{each['Host']}:#{each['VLAN ID']}"
   end.join(',')
   NetTester::Command.run nhost.to_i, vlan_option
 end

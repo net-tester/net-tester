@@ -17,7 +17,7 @@ module NetTester
 
     def self.run(nhost, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
-      sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{nhost} #{vlan}"
+      sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{vlan}"
       @@test_switch = TestSwitch.create(dpid: 0xabc)
 
       ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
@@ -45,7 +45,9 @@ module NetTester
     def self.add(vport, port)
       mac_address = Host.find_by(name: "host#{vport}").mac_address
       Trema.trema_process('NetTesterController', socket_dir).controller
-           .create_patch(vport, mac_address, port)
+           .create_patch(source_port: vport,
+                         source_mac_address: mac_address,
+                         destination_port: port)
     end
 
     # TODO: Raise if source_name or dest_name not found
