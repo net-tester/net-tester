@@ -62,17 +62,23 @@ module NetTester
     end
 
     desc 'Show received packets'
-    command :received_packets do |c|
-      c.desc 'host that sends packets'
-      c.flag [:s, :source]
-      c.desc 'host that receives packets'
-      c.flag [:d, :dest]
+    command :stats do |c|
+      c.action do |_global_options, _options, args|
+        sent_desc = ''
+        NetTester::Host.all.each do |each|
+          next if args.first == each.name
+          npacket = Command.packets_sent(args.first, each.name)
+          sent_desc += "  #{args.first} -> #{each.name} = #{npacket} packet" if npacket > 0
+        end
+        puts "Packets sent:\n#{sent_desc}" unless sent_desc.empty?
 
-      c.action do |_global_options, options, _args|
-        raise '--source option is mandatory' if options[:source].nil?
-        raise '--dest option is mandatory' if options[:dest].nil?
-
-        Command.packets_received(options[:dest], options[:source])
+        received_desc = ''
+        NetTester::Host.all.each do |each|
+          next if args.first == each.name
+          npacket = Command.packets_received(args.first, each.name)
+          received_desc += "  #{each.name} -> #{args.first} = #{npacket} packet" if npacket > 0
+        end
+        puts "Packets received:\n#{received_desc}" unless received_desc.empty?
       end
     end
 

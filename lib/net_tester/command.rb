@@ -57,6 +57,12 @@ module NetTester
       source.send_packet(dest)
     end
 
+    def self.packets_sent(source_name, dest_name)
+      source = Host.find_by(name: source_name)
+      dest = Host.find_by(name: dest_name)
+      source.packets_sent_to(dest).size
+    end
+
     # TODO: Raise if dest_name or source_name not found
     def self.packets_received(dest_name, source_name)
       dest = Host.find_by(name: dest_name)

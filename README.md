@@ -85,11 +85,14 @@ NetTester を起動する
 * --source: 送信元ホスト名
 * --dest: 宛先ホスト名
 
-## net_tester received_packets [オプション]
-受信パケット数を表示
+## net_tester stats ホスト名
+送受信パケット数を表示
 
-* --source: 送信元ホスト名
-* --dest: 宛先ホスト名
+```shellsession
+$ ./bin/net_tester stats host2
+Packets received:
+  host1 -> host2 = 1 packet
+```
 
 ## net_tester kill
 NetTester を停止する

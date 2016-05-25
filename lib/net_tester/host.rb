@@ -67,6 +67,12 @@ module NetTester
       Phut::VhostDaemon.process(name, socket_dir).send_packets(destination.vhost, 1)
     end
 
+    def packets_sent_to(dest)
+      Phut::VhostDaemon.process(name, socket_dir).stats[:tx].select do |each|
+        (each[:destination_mac].to_s == dest.mac_address) && (each[:destination_ip_address].to_s == dest.ip_address)
+      end
+    end
+
     def packets_received_from(source)
       Phut::VhostDaemon.process(name, socket_dir).stats[:rx].select do |each|
         (each[:source_mac].to_s == source.mac_address) && (each[:source_ip_address].to_s == source.ip_address)
