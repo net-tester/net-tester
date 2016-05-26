@@ -1,7 +1,7 @@
 @wip
 Feature: net_tester list コマンド
   Background:
-    Given NetTester とテストホスト 2 台を起動
+    Given NetTester でテストホスト 2 台を起動
     And テスト対象のネットワークにイーサネットスイッチが 1 台
     And DPID が 0xdef の NetTester 物理スイッチ
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:

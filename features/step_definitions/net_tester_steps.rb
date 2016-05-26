@@ -7,11 +7,6 @@ def debug_ovs(name)
   $stderr.puts `sudo ovs-ofctl show #{name}`
 end
 
-Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
-  $stderr.puts 'deprecated'
-  NetTester::Command.run nhost.to_i
-end
-
 Given(/^NetTester でテストホスト (\d+) 台を起動$/) do |nhost|
   NetTester::Command.run nhost.to_i
 end

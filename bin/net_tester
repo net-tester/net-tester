@@ -78,6 +78,7 @@ module NetTester
     command :stats do |c|
       c.action do |_golbal_options, _options, args|
         help_now!('host is required') if args.empty?
+        exit_now!('NetTester is not running') unless Command.running?
 
         host = args.first
         unless NetTester::Host.find_by(name: host)

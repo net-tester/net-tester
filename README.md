@@ -27,7 +27,7 @@ Feature: ポート 1 とポート 2 でパケットを送受信
 
   Scenario: ポート 1 番とポート 2 番でパケットを送受信
     Given DPID が 0xdef の NetTester 物理スイッチ
-    And NetTester とテストホスト 2 台を起動
+    And NetTester でテストホスト 2 台を起動
     When 次のパッチを追加:
       | Virtual Port | Physical Port |
       |            1 |             1 |

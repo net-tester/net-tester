@@ -49,7 +49,13 @@ Feature: "net_tester stats" コマンド
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "host is required" を含む
 
-  Scenario: 引数に不正なホスト名を指定
+  Scenario: 不正なホスト名を指定
     When コマンド `net_tester stats NO_SUCH_HOST` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "NO_SUCH_HOST: no such host" を含む
+
+  Scenario: NetTester が起動していない状態で "net_tester stats host1"
+    Given コマンド `net_tester kill` の実行に成功
+    When コマンド `net_tester stats host1` を実行
+    Then 終了ステータスは 0 ではない
+    And コマンドの出力は "NetTester is not running" を含む
