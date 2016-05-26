@@ -34,6 +34,12 @@ module ActiveFlow
 
     def self.send_message(datapath_id, message)
       Trema::Controller::SWITCH.fetch(datapath_id).write message
+    rescue KeyError
+      if datapath_id == 0xdef
+        raise "NetTester physical switch #{datapath_id.to_hex} is not running"
+      else
+        raise "Switch #{datapath_id.to_hex} is not running"
+      end
     end
 
     def self.flow_stats_reply(datapath_id, message)

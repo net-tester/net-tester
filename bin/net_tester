@@ -27,7 +27,10 @@ module NetTester
         raise '--nhost option is mandatory' if options[:nhost].nil?
         raise '--device option is mandatory' if options[:device].nil?
 
-        Command.run options[:device], options[:nhost].to_i, options[:vlan]
+        exit_now!('NetTester is already running') if Command.running?
+
+        Command.run options[:nhost].to_i, options[:vlan]
+        Command.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end
 
@@ -41,6 +44,8 @@ module NetTester
       c.action do |_global_options, options, _args|
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
+
+        exit_now!('NetTester is not running') unless Command.running?
 
         Command.add options[:vport].to_i, options[:port].to_i
       end

@@ -74,6 +74,12 @@ module NetTester
       dest.packets_received_from(source).size
     end
 
+    def self.running?
+      Trema.trema_process('NetTesterController', 'tmp/sockets').controller
+    rescue
+      false
+    end
+
     def self.kill
       Switch.destroy_all
       TestSwitch.destroy_all
