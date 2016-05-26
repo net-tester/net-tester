@@ -78,7 +78,7 @@ Given(/^NetTester サーバとテスト用物理スイッチをリンクで接�
   @physical_test_switch.add_port(@main_link.device(:psw))
 end
 
-Given(/^NetTester 仮想スイッチと物理スイッチを次のように接続$/) do |table|
+Given(/^NetTester 仮想スイッチと物理スイッチを次のように接続:$/) do |table|
   # FIXME: リンクは一本だけなので each しない
   table.hashes.each do |each|
     main_link = Link.create('ssw', 'psw')

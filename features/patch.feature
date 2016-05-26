@@ -7,7 +7,7 @@ Feature: パッチング
       | Physical Port | Testee Port |
       |             1 |           1 |
       |             2 |           2 |
-    And NetTester 仮想スイッチと物理スイッチを次のように接続
+    And NetTester 仮想スイッチと物理スイッチを次のように接続:
       | Virtual Port | Physical Port |
       |            3 |             3 |
 

@@ -86,12 +86,14 @@ NetTester を起動する
 * --dest: 宛先ホスト名
 
 ## net_tester stats ホスト名
-送受信パケット数を表示
+指定したホストの送受信パケット数を表示
 
 ```shellsession
-$ ./bin/net_tester stats host2
-Packets received:
+$ ./bin/net_tester stats host1
+Packets sent:
   host1 -> host2 = 1 packet
+Packets received:
+  host2 -> host1 = 1 packet
 ```
 
 ## net_tester kill

@@ -74,21 +74,29 @@ module NetTester
     end
 
     desc 'Show received packets'
+    arg_name 'host'
     command :stats do |c|
       c.action do |_golbal_options, _options, args|
+        help_now!('host is required') if args.empty?
+
+        host = args.first
+        unless NetTester::Host.find_by(name: host)
+          exit_now! %(#{host}: no such host)
+        end
+
         sent_desc = ''
         NetTester::Host.all.each do |each|
-          next if args.first == each.name
-          npacket = Command.packets_sent(args.first, each.name)
-          sent_desc += "  #{args.first} -> #{each.name} = #{npacket} packet" if npacket > 0
+          next if host == each.name
+          npacket = Command.packets_sent(host, each.name)
+          sent_desc += "  #{host} -> #{each.name} = #{npacket} packet" if npacket > 0
         end
         puts "Packets sent:\n#{sent_desc}" unless sent_desc.empty?
 
         received_desc = ''
         NetTester::Host.all.each do |each|
-          next if args.first == each.name
-          npacket = Command.packets_received(args.first, each.name)
-          received_desc += "  #{each.name} -> #{args.first} = #{npacket} packet" if npacket > 0
+          next if host == each.name
+          npacket = Command.packets_received(host, each.name)
+          received_desc += "  #{each.name} -> #{host} = #{npacket} packet" if npacket > 0
         end
         puts "Packets received:\n#{received_desc}" unless received_desc.empty?
       end
