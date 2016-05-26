@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'pio'
+require 'trema/controller'
 
 module ActiveFlow
   # Base class of flow entries
@@ -33,8 +34,18 @@ module ActiveFlow
 
     def self.send_message(datapath_id, message)
       Trema::Controller::SWITCH.fetch(datapath_id).write message
-    rescue KeyError, Errno::ECONNRESET, Errno::EPIPE
-      logger.debug "Switch #{datapath_id} is disconnected."
+    end
+
+    def self.flow_stats_reply(datapath_id, message)
+      @@flow_stats_reply[datapath_id] = message
+    end
+
+    def self.flow_stats(dpid)
+      @@flow_stats_reply ||= {}
+      @@flow_stats_reply[dpid] = nil
+      send_message dpid, FlowStats::Request.new
+      sleep 1 # FIXME
+      @@flow_stats_reply[dpid]
     end
   end
 end

@@ -46,6 +46,13 @@ module NetTester
       end
     end
 
+    desc 'List patches'
+    command :list do |c|
+      c.action do |_global_options, _options, _args|
+        p Command.list
+      end
+    end
+
     desc 'Send packet'
     command :send_packet do |c|
       c.desc 'host that sends packets'
@@ -63,7 +70,7 @@ module NetTester
 
     desc 'Show received packets'
     command :stats do |c|
-      c.action do |_global_options, _options, args|
+      c.action do |_golbal_options, _options, args|
         sent_desc = ''
         NetTester::Host.all.each do |each|
           next if args.first == each.name

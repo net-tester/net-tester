@@ -5,4 +5,10 @@ class PatchToNetworkFlow < ActiveFlow::Base
                                        source_mac_address: source_mac_address),
                       actions: SendOutPort.new(out_port))
   end
+
+  def self.all
+    flow_stats(0xdef).stats.select do |each|
+      each.match.in_port == Host.all.size + 1
+    end
+  end
 end

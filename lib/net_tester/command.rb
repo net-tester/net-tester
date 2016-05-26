@@ -50,6 +50,10 @@ module NetTester
                          destination_port: port)
     end
 
+    def self.list
+      Trema.trema_process('NetTesterController', socket_dir).controller.list_patches
+    end
+
     # TODO: Raise if source_name or dest_name not found
     def self.send_packet(source_name, dest_name)
       source = Host.find_by(name: source_name)
