@@ -8,6 +8,11 @@ def debug_ovs(name)
 end
 
 Given(/^NetTester とテストホスト (\d+) 台を起動$/) do |nhost|
+  $stderr.puts 'deprecated'
+  NetTester::Command.run nhost.to_i
+end
+
+Given(/^NetTester でテストホスト (\d+) 台を起動$/) do |nhost|
   NetTester::Command.run nhost.to_i
 end
 
@@ -118,4 +123,21 @@ Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn �
       expect(IO.readlines("#{log_dir}/PacketInLogger.log").any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false
     end
   end
+end
+
+Then(/^OpenFlow コントローラが停止$/) do
+  step 'the file "tmp/pids/NetTesterController.pid" should not exist'
+end
+
+Then(/^すべてのスイッチが停止$/) do
+  expect(NetTester::Switch.all).to be_empty
+end
+
+Then(/^次の仮想ホストがすべて停止:$/) do |hosts|
+  files = hosts.raw.flatten.map { |each| "tmp/pids/vhost.#{each}.pid" }
+  expect(files).not_to include be_an_existing_file
+end
+
+Then(/^すべてのリンクが停止$/) do
+  expect(NetTester::Link.all).to be_empty
 end

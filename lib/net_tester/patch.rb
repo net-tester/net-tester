@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module NetTester
   class Patch
     def self.create(vlan_id:, source_port:, source_mac_address:, destination_port:)
