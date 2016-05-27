@@ -26,8 +26,7 @@ Feature: ポート 1 とポート 2 でパケットを送受信
   パケットを送受信できる
 
   Scenario: ポート 1 番とポート 2 番でパケットを送受信
-    Given DPID が 0x123 の NetTester 物理スイッチ
-    And NetTester でテストホスト 2 台を起動
+    Given NetTester をオプション "--nhost 2 --device eth1 --dpid 0x123" で起動
     When 次のパッチを追加:
       | Virtual Port | Physical Port |
       |            1 |             1 |

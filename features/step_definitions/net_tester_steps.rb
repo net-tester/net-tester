@@ -1,6 +1,11 @@
 # coding: utf-8
 # frozen_string_literal: true
 
+Given(/^NetTester をオプション "([^"]*)" で起動$/) do |options|
+  command = "./bin/net_tester run #{options}"
+  system command || railse("#{command} failed")
+end
+
 When(/^次のパッチを追加:$/) do |table|
   table.hashes.each do |each|
     NetTester::Command.add(each['Virtual Port'].to_i, each['Physical Port'].to_i)
