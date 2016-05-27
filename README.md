@@ -15,7 +15,7 @@ NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみ�
 インストールには次のものが必要です:
 
 * Ruby 2.2.0 以上
-* [Open vSwitch][openvswitch] (`apt-get install openvswitch-switch`).
+* [Open vSwitch](https://openvswitch.org/) (`apt-get install openvswitch-switch`).
 
 ``` shellsession
 $ git clone https://github.com/yasuhito/net_tester.git
