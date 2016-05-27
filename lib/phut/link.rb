@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'net_tester/virtual_link'
 require 'net_tester/sh'
+require 'phut/virtual_link'
 
 module Phut
   # Virtual link
@@ -33,8 +33,8 @@ module Phut
     end
 
     def initialize(name_a, name_b, link_id: Link.all.size)
-      @link = NetTester::VirtualLink.new(device_name(link_id, name_a),
-                                         device_name(link_id, name_b))
+      @link = VirtualLink.new(device_name(link_id, name_a),
+                              device_name(link_id, name_b))
       @device = [name_a, name_b].each_with_object({}) do |each, hash|
         hash[each.to_sym] = device_name(link_id, each)
       end
