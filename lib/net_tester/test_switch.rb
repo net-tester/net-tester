@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'net_tester/switch'
+require 'phut/switch'
 
 module NetTester
   # NetTester software OpenFlow Switch
-  class TestSwitch < Switch
+  class TestSwitch < Phut::Switch
     PREFIX = 'tsw'
   end
 end
