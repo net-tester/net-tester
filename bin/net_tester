@@ -65,13 +65,6 @@ module NetTester
       end
     end
 
-    desc 'List patches'
-    command :list do |c|
-      c.action do |_global_options, _options, _args|
-        p Command.list
-      end
-    end
-
     desc 'Send an UDP packet'
     command :send do |c|
       c.desc 'host that sends packets'
