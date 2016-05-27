@@ -1,6 +1,6 @@
 # NetTesterとは
 
-NetTesterは物理ネットワークのための受け入れテストツールです。物理ネットワークに仮想的なホストをつなぎこみ、ping疎通などのテストをソフトウェア的に実行できます。
+NetTesterは物理ネットワークのための受け入れテストツールです。物理ネットワークに仮想的なホストをつなぎこみ、ping疎通などのテストをソフトウェアで自動実行できます。テストをすべてソフトウェアで行うため、人手では時間のかかる網羅的なテストもスクリプトによって自動的に実行できます。
 
 ![overview](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/overview.png)
 
