@@ -4,52 +4,24 @@ NetTesterは物理ネットワークのための受け入れテストツール�
 
 ![overview](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/overview.png)
 
-NetTesterでのテストはテストスクリプトに沿って実行します。テストスクリプトには「host1 から host2 への ping が通る」といった一連のテスト項目を記述します。テストスクリプトをNetTesterで実行すると、仮想ホストがテストスクリプトに沿ってパケットを送受信し、実行結果を表示します。テストツールとしては現在 [Cucumber](https://cucumber.io) をサポートしています。
+NetTesterでのテストはテストスクリプトに沿って実行します。テストスクリプトには「host1 から host2 への ping が通る」といった一連のテスト項目を記述します。NetTesterテストスクリプトを実行すると、仮想ホストがテストスクリプトに沿ってパケットを送受信し、実行結果を表示します。テストツールとしては現在 [Cucumber](https://cucumber.io) をサポートしています。
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/network.png)
 
 NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみです。Linuxマシン内はパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストをテスト対象ネットワークに仮想的に接続します。このように、NetTester用のNICを持つLinuxマシン一台と物理OpenFlowスイッチを用意すれば、すぐにNetTesterを使い始められます。
 
+# インストール
 
-# テストシナリオの書き方
+インストールには次のものが必要です:
 
-## テスト構成例
+* Ruby 2.2.0 以上
+* [Open vSwitch][openvswitch] (`apt-get install openvswitch-switch`).
 
-![test_scenario](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/test_scenario.png)
-
-## Cucumber シナリオ
-
-```cucumber
-Feature: ポート 1 とポート 2 でパケットを送受信
-
-  ネットワークのポート 1 番とポート 2 番に接続したホスト同士で
-  パケットを送受信できる
-
-  Scenario: ポート 1 番とポート 2 番でパケットを送受信
-    Given NetTester をオプション "--nhost 2 --device eth1 --dpid 0x123" で起動
-    When 次のパッチを追加:
-      | Virtual Port | Physical Port |
-      |            1 |             1 |
-      |            2 |             2 |
-    And 各テストホストから次のようにパケットを送信:
-      | Source Host | Destination Host |
-      |           1 |                2 |
-      |           2 |                1 |
-    Then 各テストホストは次のようにパケットを受信する:
-      | Source Host | Destination Host |
-      |           1 |                2 |
-      |           2 |                1 |
+``` shellsession
+$ git clone https://github.com/yasuhito/net_tester.git
+$ cd net_tester
+$ bundle install
 ```
-
-### Teardown
-
-```ruby
-# features/support/hooks.rb
-After do
-  NetTester::Command.kill
-end
-```
-
 
 # コマンド一覧
 
@@ -102,3 +74,42 @@ Packets received:
 
 ## net_tester kill
 NetTester を停止する
+
+# テストシナリオの書き方
+
+## テスト構成例
+
+![test_scenario](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/test_scenario.png)
+
+## Cucumber シナリオ
+
+```cucumber
+Feature: ポート 1 とポート 2 でパケットを送受信
+
+  ネットワークのポート 1 番とポート 2 番に接続したホスト同士で
+  パケットを送受信できる
+
+  Scenario: ポート 1 番とポート 2 番でパケットを送受信
+    Given NetTester をオプション "--nhost 2 --device eth1 --dpid 0x123" で起動
+    When 次のパッチを追加:
+      | Virtual Port | Physical Port |
+      |            1 |             1 |
+      |            2 |             2 |
+    And 各テストホストから次のようにパケットを送信:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+    Then 各テストホストは次のようにパケットを受信する:
+      | Source Host | Destination Host |
+      |           1 |                2 |
+      |           2 |                1 |
+```
+
+### Teardown
+
+```ruby
+# features/support/hooks.rb
+After do
+  NetTester::Command.kill
+end
+```

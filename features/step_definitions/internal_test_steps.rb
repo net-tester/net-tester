@@ -8,6 +8,7 @@ end
 Given(/^NetTester でテストホスト (\d+) 台を起動$/) do |nhost|
   raise 'NetTester 物理スイッチが起動していない' unless @physical_test_switch_dpid
   NetTester::Command.run nhost.to_i, @physical_test_switch_dpid
+  sleep 1
 end
 
 Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
@@ -15,6 +16,7 @@ Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起�
     "host#{each['Host']}:#{each['VLAN ID']}"
   end.join(',')
   NetTester::Command.run nhost.to_i, @physical_test_switch_dpid, vlan_option
+  sleep 1
 end
 
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
