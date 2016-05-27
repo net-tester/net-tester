@@ -12,6 +12,12 @@ When(/^次のパッチを追加:$/) do |table|
   end
 end
 
+When(/^次のパッチを削除:$/) do |table|
+  table.hashes.each do |each|
+    NetTester::Command.delete(each['Virtual Port'].to_i, each['Physical Port'].to_i)
+  end
+end
+
 When(/^各テストホストから次のようにパケットを送信:$/) do |table|
   table.hashes.each do |each|
     NetTester::Command.send_packet("host#{each['Source Host']}", "host#{each['Destination Host']}")

@@ -50,6 +50,14 @@ module NetTester
                          destination_port: port)
     end
 
+    def self.delete(vport, port)
+      mac_address = Host.find_by(name: "host#{vport}").mac_address
+      Trema.trema_process('NetTesterController', socket_dir).controller
+           .destroy_patch(source_port: vport,
+                          source_mac_address: mac_address,
+                          destination_port: port)
+    end
+
     def self.list
       Trema.trema_process('NetTesterController', socket_dir).controller.list_patches
     end

@@ -15,6 +15,16 @@ module NetTester
                                 physical_switch_dpid: physical_switch_dpid)
     end
 
+    def self.destroy(physical_switch_dpid:,
+                     source_port:, source_mac_address:, destination_port:)
+      HostToPatchFlow.destroy(in_port: source_port)
+      PatchToHostFlow.destroy(destination_mac_address: source_mac_address, out_port: source_port)
+      PatchToNetworkFlow.destroy(source_mac_address: source_mac_address, out_port: destination_port,
+                                 physical_switch_dpid: physical_switch_dpid)
+      NetworkToPatchFlow.destroy(in_port: destination_port,
+                                 physical_switch_dpid: physical_switch_dpid)
+    end
+
     def self.all
       HostToPatchFlow.all
       PatchToNetworkFlow.all

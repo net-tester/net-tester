@@ -25,11 +25,31 @@ module ActiveFlow
       end
     end
 
+    class FlowModDeleteOption
+      def initialize(user_options)
+        @user_options = user_options
+      end
+
+      def to_hash
+        {
+          command: :delete,
+          transaction_id: rand(0xffffffff),
+          buffer_id: @user_options[:buffer_id] || 0xffffffff,
+          match: @user_options.fetch(:match),
+          out_port: @user_options[:out_port] || 0xffffffff
+        }
+      end
+    end
+
     include Pio::OpenFlow10
     include NetTester
 
     def self.send_flow_mod_add(datapath_id, options)
       send_message datapath_id, FlowMod.new(FlowModAddOption.new(options).to_hash)
+    end
+
+    def self.send_flow_mod_delete(datapath_id, options)
+      send_message datapath_id, FlowMod.new(FlowModDeleteOption.new(options).to_hash)
     end
 
     def self.send_message(datapath_id, message)

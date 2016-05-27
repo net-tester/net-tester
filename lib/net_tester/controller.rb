@@ -32,6 +32,13 @@ class NetTesterController < Trema::Controller
                  destination_port: destination_port)
   end
 
+  def destroy_patch(source_port:, source_mac_address:, destination_port:)
+    Patch.destroy(physical_switch_dpid: @physical_switch_dpid,
+                  source_port: source_port,
+                  source_mac_address: source_mac_address,
+                  destination_port: destination_port)
+  end
+
   def list_patches
     Patch.all.map(&:to_s).join("\n")
   end
