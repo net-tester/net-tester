@@ -4,11 +4,20 @@ NetTesterは物理ネットワークのための受け入れテストツール�
 
 ![overview](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/overview.png)
 
-NetTesterでのテストはテストスクリプトに沿って実行します。テストスクリプトには「host1 から host2 への ping が通る」といった一連のテスト項目を記述します。NetTesterテストスクリプトを実行すると、仮想ホストがテストスクリプトに沿ってパケットを送受信し、実行結果を表示します。テストツールとしては現在 [Cucumber](https://cucumber.io) をサポートしています。
+NetTesterでのテストはテストスクリプトに沿って実行します。テストスクリプトには次の要素を記述できます:
+
+* 仮想ホストと物理ネットワークの接続関係
+* 「host1 から host2 への ping が通る」といった一連のテスト項目
+
+NetTesterテストスクリプトを実行すると、仮想ホストが物理ネットワークに接続し、パケットを送受信した結果を表示します。テストツールとしては現在 [Cucumber](https://cucumber.io) をサポートしています。
+
+## NetTester の仕組み
+
+NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみです。
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/network.png)
 
-NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみです。Linuxマシン内はパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストをテスト対象ネットワークに仮想的に接続します。このように、NetTester用のNICを持つLinuxマシン一台と物理OpenFlowスイッチを用意すれば、すぐにNetTesterを使い始められます。
+Linuxマシンはパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストをテスト対象ネットワークに仮想的に接続します。このように、NetTester用のNICを持つLinuxマシン一台と物理OpenFlowスイッチを用意すれば、すぐにNetTesterを使い始められます。
 
 # インストール
 
