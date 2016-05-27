@@ -12,8 +12,8 @@ Feature: "net_tester stats" コマンド
 
   Background:
     Given テスト対象のネットワークにイーサネットスイッチが 1 台
-    And NetTester でテストホスト 2 台を起動
     And DPID が 0xdef の NetTester 物理スイッチ
+    And NetTester でテストホスト 2 台を起動
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
       | Physical Port | Testee Port |
       |             1 |           1 |

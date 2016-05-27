@@ -9,9 +9,11 @@ require 'net_tester/patch'
 class NetTesterController < Trema::Controller
   include NetTester
 
-  # args = ['host_name0:vlan_id0,host_name1:vlan_id1,host_name2:vlan_id2,...']
+  # args0: dpid
+  # args1: 'host_name0:vlan_id0,host_name1:vlan_id1,host_name2:vlan_id2,...'
   def start(args)
-    @vlan_id = (args.first || '').split(',').each_with_object({}) do |each, hash|
+    @physical_switch_dpid = args.first.to_i
+    @vlan_id = (args[1] || '').split(',').each_with_object({}) do |each, hash|
       raise "Invalid argument: #{args.inspect}" unless /host(\d+):(\d+)/=~ each
       hash[Regexp.last_match(1).to_i] = Regexp.last_match(2).to_i
     end
@@ -23,7 +25,8 @@ class NetTesterController < Trema::Controller
   end
 
   def create_patch(source_port:, source_mac_address:, destination_port:)
-    Patch.create(vlan_id: @vlan_id[source_port],
+    Patch.create(physical_switch_dpid: @physical_switch_dpid,
+                 vlan_id: @vlan_id[source_port],
                  source_port: source_port,
                  source_mac_address: source_mac_address,
                  destination_port: destination_port)

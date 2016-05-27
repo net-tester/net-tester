@@ -1,8 +1,8 @@
 Feature: パッチング
   Background:
-    Given NetTester でテストホスト 2 台を起動
+    Given DPID が 0x123 の NetTester 物理スイッチ
+    And NetTester でテストホスト 2 台を起動
     And テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ
-    And DPID が 0xdef の NetTester 物理スイッチ
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
       | Physical Port | Testee Port |
       |             1 |           1 |

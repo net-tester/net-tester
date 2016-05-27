@@ -18,18 +18,21 @@ module NetTester
     command :run do |c|
       c.desc 'number of virtual hosts'
       c.flag [:n, :nhost]
-      c.desc 'device name that virtual hosts use'
-      c.flag [:D, :device]
       c.desc 'VLAN ID set to each host'
       c.flag [:vlan]
+      c.desc 'device name that virtual hosts use'
+      c.flag [:d, :device]
+      c.desc 'dpid that physical switch uses'
+      c.flag [:D, :dpid]
 
       c.action do |_global_options, options, _args|
         raise '--nhost option is mandatory' if options[:nhost].nil?
         raise '--device option is mandatory' if options[:device].nil?
-
+        raise '--dpid option is mandatory' if options[:dpid].nil?
+        exit_now!('--nhost must be > 0') if options[:nhost].to_i <= 0
         exit_now!('NetTester is already running') if Command.running?
 
-        Command.run options[:nhost].to_i, options[:vlan]
+        Command.run options[:nhost].to_i, options[:dpid].hex, options[:vlan]
         Command.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end

@@ -15,9 +15,9 @@ module NetTester
     extend Dir
     extend Sh
 
-    def self.run(nhost, vlan = '')
+    def self.run(nhost, dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
-      sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{vlan}"
+      sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{dpid} #{vlan}"
       @@test_switch = TestSwitch.create(dpid: 0xabc)
 
       ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }

@@ -27,3 +27,7 @@ end
 Then(/^コマンド "([^"]*)" の出力は次のとおり:$/) do |command, output|
   step %(the output from "#{command}" should contain exactly:), output
 end
+
+Then(/^次のファイルができる:$/) do |table|
+  step 'the following files should exist:', table
+end

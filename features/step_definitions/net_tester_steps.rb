@@ -7,15 +7,21 @@ def debug_ovs(name)
   $stderr.puts `sudo ovs-ofctl show #{name}`
 end
 
+Given(/^DPID が (\S+) の NetTester 物理スイッチ$/) do |dpid|
+  @physical_test_switch_dpid = dpid.hex
+  @physical_test_switch = PhysicalTestSwitch.create(dpid: dpid.hex)
+end
+
 Given(/^NetTester でテストホスト (\d+) 台を起動$/) do |nhost|
-  NetTester::Command.run nhost.to_i
+  raise 'NetTester 物理スイッチが起動していない' unless @physical_test_switch_dpid
+  NetTester::Command.run nhost.to_i, @physical_test_switch_dpid
 end
 
 Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
   vlan_option = + table.hashes.map do |each|
     "host#{each['Host']}:#{each['VLAN ID']}"
   end.join(',')
-  NetTester::Command.run nhost.to_i, vlan_option
+  NetTester::Command.run nhost.to_i, @physical_test_switch_dpid, vlan_option
 end
 
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
@@ -32,10 +38,6 @@ Given(/^テスト対象のネットワークにイーサネットスイッチが
   cd('.') do
     step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
   end
-end
-
-Given(/^DPID が (\S+) の NetTester 物理スイッチ$/) do |dpid|
-  @physical_test_switch = PhysicalTestSwitch.create(dpid: dpid.hex)
 end
 
 Given(/^テスト対象のスイッチとテスト用物理スイッチをリンク (\d+) 本で接続$/) do |nhost|

@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 module NetTester
   class Patch
-    def self.create(vlan_id:, source_port:, source_mac_address:, destination_port:)
+    def self.create(physical_switch_dpid:,
+                    vlan_id:, source_port:, source_mac_address:, destination_port:)
       if vlan_id
         VlanHostToPatchFlow.create(in_port: source_port, vlan_id: vlan_id)
       else
         HostToPatchFlow.create(in_port: source_port)
       end
       PatchToHostFlow.create(destination_mac_address: source_mac_address, out_port: source_port)
-      PatchToNetworkFlow.create(source_mac_address: source_mac_address, out_port: destination_port)
-      NetworkToPatchFlow.create(in_port: destination_port)
+      PatchToNetworkFlow.create(source_mac_address: source_mac_address, out_port: destination_port,
+                                physical_switch_dpid: physical_switch_dpid)
+      NetworkToPatchFlow.create(in_port: destination_port,
+                                physical_switch_dpid: physical_switch_dpid)
     end
 
     def self.all
