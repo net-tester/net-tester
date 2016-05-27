@@ -17,7 +17,7 @@ Then(/^終了ステータスは (\d+) ではない$/) do |status|
 end
 
 Then(/^コマンドの出力はなし$/) do
-  expect(all_commands.map(&:output).join("\n").chomp).to have_output_size 0
+  expect(all_commands.map(&:output).join).to have_output_size 0
 end
 
 Then(/^コマンドの出力は "([^"]*)" を含む$/) do |output|

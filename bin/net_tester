@@ -42,10 +42,21 @@ module NetTester
       c.flag [:port]
 
       c.action do |_global_options, options, _args|
+        exit_now!('NetTester is not running') unless Command.running?
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
-
-        exit_now!('NetTester is not running') unless Command.running?
+        if options[:vport].to_i > Host.all.size
+          exit_now!("#{options[:vport]}: no such virtual port")
+        end
+        if options[:vport].to_i < 0
+          exit_now!("#{options[:vport]}: invalid virtual port")
+        end
+        if options[:port].to_i > Host.all.size
+          exit_now!("#{options[:port]}: no such port")
+        end
+        if options[:port].to_i < 0
+          exit_now!("#{options[:port]}: invalid port")
+        end
 
         Command.add options[:vport].to_i, options[:port].to_i
       end
@@ -69,10 +80,10 @@ module NetTester
         exit_now!('NetTester is not running') unless Command.running?
         exit_now! '--source option is mandatory' if options[:source].nil?
         exit_now! '--dest option is mandatory' if options[:dest].nil?
-        unless NetTester::Host.find_by(name: options[:source])
+        unless Host.find_by(name: options[:source])
           exit_now! %(#{options[:source]}: no such host)
         end
-        unless NetTester::Host.find_by(name: options[:dest])
+        unless Host.find_by(name: options[:dest])
           exit_now! %(#{options[:dest]}: no such host)
         end
 
@@ -87,12 +98,12 @@ module NetTester
         exit_now!('NetTester is not running') unless Command.running?
         help_now!('host is required') if args.empty?
         host = args.first
-        unless NetTester::Host.find_by(name: host)
+        unless Host.find_by(name: host)
           exit_now! %(#{host}: no such host)
         end
 
         sent_desc = ''
-        NetTester::Host.all.each do |each|
+        Host.all.each do |each|
           next if host == each.name
           npacket = Command.packets_sent(host, each.name)
           sent_desc += "  #{host} -> #{each.name} = #{npacket} packet" if npacket > 0
@@ -100,7 +111,7 @@ module NetTester
         puts "Packets sent:\n#{sent_desc}" unless sent_desc.empty?
 
         received_desc = ''
-        NetTester::Host.all.each do |each|
+        Host.all.each do |each|
           next if host == each.name
           npacket = Command.packets_received(host, each.name)
           received_desc += "  #{each.name} -> #{host} = #{npacket} packet" if npacket > 0

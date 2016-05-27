@@ -58,7 +58,7 @@ end
 NetTester を起動する
 
 ```shellsession
-./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
+$ ./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
 ```
 
 * --nhost: 起動する仮想ホストの台数
@@ -71,7 +71,7 @@ NetTester を起動する
 パッチを追加する
 
 ```shellsession
-./bin/net_tester add --vport 2 --port 1
+$ ./bin/net_tester add --vport 2 --port 1
 ```
 
 * --vport: 仮想スイッチのポート番号
