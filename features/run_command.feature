@@ -1,4 +1,14 @@
 Feature: "net_tester run" コマンド
+
+  NetTester ユーザは、"net_tester run" コマンドで
+  NetTester を起動できる。
+
+  起動するものは次のとおり:
+  - OpenFlow コントローラ
+  - 仮想スイッチ
+  - 仮想ホスト
+  - 仮想リンク
+
   Scenario: ホスト 3 台を起動
     When コマンド `net_tester run --nhost 3 --device eth1 --dpid 0x123` を実行
     Then 終了ステータスは 0
