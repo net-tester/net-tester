@@ -2,12 +2,12 @@
 require 'net_tester/virtual_link'
 require 'net_tester/sh'
 
-module NetTester
+module Phut
   # Virtual link
   class Link
     LINK_DEVICE_PREFIX = 'lnk'
 
-    extend Sh
+    extend NetTester::Sh
 
     def self.all
       link = Hash.new { [] }
@@ -33,8 +33,8 @@ module NetTester
     end
 
     def initialize(name_a, name_b, link_id: Link.all.size)
-      @link = VirtualLink.new(device_name(link_id, name_a),
-                              device_name(link_id, name_b))
+      @link = NetTester::VirtualLink.new(device_name(link_id, name_a),
+                                         device_name(link_id, name_b))
       @device = [name_a, name_b].each_with_object({}) do |each, hash|
         hash[each.to_sym] = device_name(link_id, each)
       end

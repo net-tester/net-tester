@@ -2,11 +2,11 @@
 require 'faker'
 require 'net_tester/dir'
 require 'net_tester/host'
-require 'net_tester/link'
 require 'net_tester/physical_test_switch'
 require 'net_tester/sh'
 require 'net_tester/test_switch'
 require 'phut'
+require 'phut/link'
 require 'trema'
 
 module NetTester
@@ -26,7 +26,7 @@ module NetTester
       1.upto(nhost).each do |each|
         host_name = "host#{each}"
         port_name = "port#{each}"
-        link = Link.create(host_name, port_name)
+        link = Phut::Link.create(host_name, port_name)
         Host.create(name: host_name,
                     ip_address: ip_address[each - 1],
                     mac_address: mac_address[each - 1],
@@ -85,7 +85,7 @@ module NetTester
       TestSwitch.destroy_all
       PhysicalTestSwitch.destroy_all
       Host.destroy_all
-      Link.destroy_all
+      Phut::Link.destroy_all
       # TODO: Remove rescue
       begin
         Trema.trema_process('NetTesterController', socket_dir).killall

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 require 'faker'
 require 'net_tester/host'
-require 'net_tester/link'
+require 'phut/link'
 
 module NetTester
   describe Host do
@@ -16,7 +16,7 @@ module NetTester
 
     after(:each) do
       destroy_all_host
-      Link.destroy_all
+      Phut::Link.destroy_all
     end
 
     describe '.all' do
@@ -37,7 +37,7 @@ module NetTester
       end
 
       context 'with a link device' do
-        Given(:device) { Link.create('a', 'b').device('a') }
+        Given(:device) { Phut::Link.create('a', 'b').device('a') }
         Then { Host.all.size == 1 }
         Then { host.name == 'myhost' }
         Then { host.device == device }
