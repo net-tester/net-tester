@@ -18,7 +18,7 @@ module NetTester
     def self.run(nhost, dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
       sh "bundle exec trema run #{controller_file} -L #{File.expand_path log_dir} -P #{File.expand_path pid_dir} -S #{File.expand_path socket_dir} --daemon -- #{dpid} #{vlan}"
-      @@test_switch = TestSwitch.create(dpid: 0xabc)
+      @@test_switch = TestSwitch.create(dpid: 0xdad1c001)
 
       ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
       mac_address = Array.new(nhost) { Faker::Internet.mac_address }

@@ -21,7 +21,7 @@ module NetTester
       NetworkToPatchFlow.all
       PatchToHostFlow.all
 
-      # host_to_patch = @flow_stats_reply[0xabc].stats.select do |each|
+      # host_to_patch = @flow_stats_reply[0xdad1c001].stats.select do |each|
       #   each.match.in_port == 1 &&
       #     each.actions.size == 1 &&
       #     each.actions.first.port == 3
@@ -43,7 +43,7 @@ module NetTester
       # end
       # logger.info "network_to_patch #{network_to_patch.inspect}"
 
-      # patch_to_host = @flow_stats_reply[0xabc].stats.select do |each|
+      # patch_to_host = @flow_stats_reply[0xdad1c001].stats.select do |each|
       #   # TODO: check the dest mac address
       #   each.match.in_port == 3 &&
       #     each.actions.size == 1 &&
