@@ -17,7 +17,7 @@ NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみ�
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/network.png)
 
-Linuxマシンはパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストをテスト対象ネットワークに仮想的に接続します。このように、NetTester用のNICを持つLinuxマシン一台と物理OpenFlowスイッチを用意すれば、すぐにNetTesterを使い始められます。
+Linuxマシンはパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストを物理ネットワークに仮想的に接続します。このように、Linuxマシン一台と物理OpenFlowスイッチを用意すれば、NetTesterを使ってさまざまなパターンのテストを自動的に実行できます。
 
 # インストール
 
