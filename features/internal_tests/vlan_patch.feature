@@ -1,7 +1,7 @@
 Feature: パッチに VLAN タグを指定
   Background:
     Given テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ
-    And DPID が 0xdef の NetTester 物理スイッチ
+    And DPID が 0x123 の NetTester 物理スイッチ
     And NetTester と VLAN を有効にしたテストホスト 2 台を起動:
       | Host | VLAN ID |
       |    1 |     100 |

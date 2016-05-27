@@ -6,7 +6,7 @@ class NetworkToPatchFlow < ActiveFlow::Base
   end
 
   def self.all
-    flow_stats(0xdef).stats.select do |each|
+    flow_stats(0x123).stats.select do |each|
       each.actions.size == 1 && each.actions.first.port == Host.all.size + 1
     end
   end

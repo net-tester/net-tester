@@ -10,7 +10,7 @@ Feature: "net_tester kill" コマンド
   - 仮想リンク
 
   Scenario: 起動中の NetTester を "net_tester kill" で停止
-    Given DPID が 0xdef の NetTester 物理スイッチ
+    Given DPID が 0x123 の NetTester 物理スイッチ
     And NetTester でテストホスト 3 台を起動
     When コマンド `net_tester kill` を実行
     Then 終了ステータスは 0

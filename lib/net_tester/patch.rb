@@ -28,7 +28,7 @@ module NetTester
       # end
       # logger.info "host_to_patch #{host_to_patch.inspect}"
 
-      # patch_to_network = @flow_stats_reply[0xdef].stats.select do |each|
+      # patch_to_network = @flow_stats_reply[0x123].stats.select do |each|
       #   # TODO: check the source mac address
       #   each.match.in_port == 3 &&
       #     each.actions.size == 1 &&
@@ -36,7 +36,7 @@ module NetTester
       # end
       # logger.info "patch_to_network: #{patch_to_network.inspect}"
 
-      # network_to_patch = @flow_stats_reply[0xdef].stats.select do |each|
+      # network_to_patch = @flow_stats_reply[0x123].stats.select do |each|
       #   each.match.in_port == 1 &&
       #     each.actions.size == 1 &&
       #     each.actions.first.port == 3
