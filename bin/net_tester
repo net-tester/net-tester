@@ -58,16 +58,23 @@ module NetTester
       end
     end
 
-    desc 'Send packet'
-    command :send_packet do |c|
+    desc 'Send an UDP packet'
+    command :send do |c|
       c.desc 'host that sends packets'
       c.flag [:s, :source]
       c.desc 'host that receives packets'
       c.flag [:d, :dest]
 
       c.action do |_global_options, options, _args|
-        raise '--source option is mandatory' if options[:source].nil?
-        raise '--dest option is mandatory' if options[:dest].nil?
+        exit_now!('NetTester is not running') unless Command.running?
+        exit_now! '--source option is mandatory' if options[:source].nil?
+        exit_now! '--dest option is mandatory' if options[:dest].nil?
+        unless NetTester::Host.find_by(name: options[:source])
+          exit_now! %(#{options[:source]}: no such host)
+        end
+        unless NetTester::Host.find_by(name: options[:dest])
+          exit_now! %(#{options[:dest]}: no such host)
+        end
 
         Command.send_packet options[:source], options[:dest]
       end
@@ -77,9 +84,8 @@ module NetTester
     arg_name 'host'
     command :stats do |c|
       c.action do |_golbal_options, _options, args|
-        help_now!('host is required') if args.empty?
         exit_now!('NetTester is not running') unless Command.running?
-
+        help_now!('host is required') if args.empty?
         host = args.first
         unless NetTester::Host.find_by(name: host)
           exit_now! %(#{host}: no such host)

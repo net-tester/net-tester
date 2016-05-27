@@ -57,30 +57,34 @@ end
 ## net_tester run [オプション]
 NetTester を起動する
 
-* --nhost: 起動する仮想ホストの台数
-* --device: 仮想スイッチが使うデバイス名
-* --vlan: 仮想ホストからのパケットに付ける VLAN ID
-
 ```shellsession
 ./bin/net_tester run --nhost 3 --device eth0 --vlan host1:100,host3:200
 ```
+
+* --nhost: 起動する仮想ホストの台数
+* --device: 仮想スイッチが使うデバイス名
+* --vlan: 仮想ホストからのパケットに付ける VLAN ID
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/run_example.png)
 
 ## net_tester add [オプション]
 パッチを追加する
 
-* --vport: 仮想スイッチのポート番号
-* --port: 物理スイッチのポート番号
-
 ```shellsession
 ./bin/net_tester add --vport 2 --port 1
 ```
 
+* --vport: 仮想スイッチのポート番号
+* --port: 物理スイッチのポート番号
+
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/add_example.png)
 
-## net_tester send_packet [オプション]
+## net_tester send [オプション]
 パケットを送信する
+
+```shellsession
+$ net_tester send --source host1 --dest host2
+```
 
 * --source: 送信元ホスト名
 * --dest: 宛先ホスト名
