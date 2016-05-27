@@ -113,3 +113,10 @@ After do
   NetTester::Command.kill
 end
 ```
+
+# 関連ツール
+
+NetTester は次のソフトウェアを参考にしました。感謝!
+
+* [stereocat/patch_panel](https://github.com/stereocat/patch_panel): [Trema](https://github.com/trema/trema) で構築した物理ネットワークテストツールです
+* [oolorg/ool-l1patch-dev](https://github.com/oolorg/ool-l1patch-dev): [Ryu](https://osrg.github.io/ryu/) で構築した物理ネットワークテストツールです
