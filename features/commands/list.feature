@@ -27,3 +27,11 @@ Feature: net_tester list コマンド
       host1 <-> port1
       host2 <-> port2
       """
+    When 次のパッチを削除:
+      | Virtual Port | Physical Port |
+      |            1 |             1 |
+      |            2 |             2 |
+    And I successfully run `net_tester list`
+    Then the output from "net_tester list" should contain exactly:
+      """
+      """

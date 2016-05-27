@@ -6,6 +6,13 @@ class PatchToHostFlow < ActiveFlow::Base
                       actions: SendOutPort.new(out_port))
   end
 
+  def self.destroy(destination_mac_address:, out_port:)
+    send_flow_mod_delete(0xdad1c001,
+                         match: Match.new(in_port: Host.all.size + 1,
+                                          destination_mac_address: destination_mac_address),
+                         out_port: out_port)
+  end
+
   def self.all
     flow_stats(0xdad1c001).stats.select do |each|
       each.match.in_port == Host.all.size + 1

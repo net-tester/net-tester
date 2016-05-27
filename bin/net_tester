@@ -65,6 +65,33 @@ module NetTester
       end
     end
 
+    desc 'Delete a patch'
+    command :delete do |c|
+      c.desc 'port number of virtual switch'
+      c.flag [:vport]
+      c.desc 'port number of physical switch'
+      c.flag [:port]
+      c.action do |_global_options, options, _args|
+        exit_now!('NetTester is not running') unless Command.running?
+        raise '--vport option is mandatory' if options[:vport].nil?
+        raise '--port option is mandatory' if options[:port].nil?
+        if options[:vport].to_i > Host.all.size
+          exit_now!("#{options[:vport]}: no such virtual port")
+        end
+        if options[:vport].to_i < 0
+          exit_now!("#{options[:vport]}: invalid virtual port")
+        end
+        if options[:port].to_i > Host.all.size
+          exit_now!("#{options[:port]}: no such port")
+        end
+        if options[:port].to_i < 0
+          exit_now!("#{options[:port]}: invalid port")
+        end
+
+        Command.delete options[:vport].to_i, options[:port].to_i
+      end
+    end
+
     desc 'Send an UDP packet'
     command :send do |c|
       c.desc 'host that sends packets'
