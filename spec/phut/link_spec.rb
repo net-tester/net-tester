@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 require 'active_support/core_ext/array/access'
-require 'net_tester/link'
+require 'phut/link'
 
-module NetTester
+module Phut
   describe Link do
     def delete_all_link
       `ifconfig -a`.split("\n").each do |each|

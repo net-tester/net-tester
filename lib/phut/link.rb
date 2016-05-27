@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-require 'net_tester/virtual_link'
 require 'net_tester/sh'
+require 'phut/virtual_link'
 
-module NetTester
+module Phut
   # Virtual link
   class Link
     LINK_DEVICE_PREFIX = 'lnk'
 
-    extend Sh
+    extend NetTester::Sh
 
     def self.all
       link = Hash.new { [] }

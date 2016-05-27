@@ -39,7 +39,7 @@ Given(/^NetTester 物理スイッチとテスト対象のスイッチを次の�
     tport_id = each['Testee Port'].to_i
     port_name = "pport#{pport_id}"
     tport_name = "tport#{tport_id}"
-    link = Link.create(tport_name, port_name)
+    link = Phut::Link.create(tport_name, port_name)
     @physical_test_switch.add_numbered_port(pport_id, link.device(port_name))
     # FIXME: Switch.find_by(name: testee_switch.name).add_port ...
     Switch.all.first.add_numbered_port tport_id, link.device(tport_name)
@@ -49,7 +49,7 @@ end
 Given(/^NetTester 仮想スイッチと物理スイッチを次のように接続:$/) do |table|
   # FIXME: リンクは一本だけなので each しない
   table.hashes.each do |each|
-    main_link = Link.create('ssw', 'psw')
+    main_link = Phut::Link.create('ssw', 'psw')
     NetTester::Command.connect_switch(device: main_link.device(:ssw), port_number: each['Virtual Port'].to_i)
     @physical_test_switch.add_numbered_port(each['Physical Port'].to_i, main_link.device(:psw))
   end
@@ -87,5 +87,5 @@ Then(/^次の仮想ホストがすべて停止:$/) do |hosts|
 end
 
 Then(/^すべてのリンクが停止$/) do
-  expect(NetTester::Link.all).to be_empty
+  expect(Phut::Link.all).to be_empty
 end
