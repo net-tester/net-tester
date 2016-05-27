@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 require 'active_support/core_ext/array/access'
-require 'net_tester/switch'
+require 'phut/switch'
 
-module NetTester
+module Phut
   describe Switch do
     def delete_all_bridge
       `sudo ovs-vsctl list-br`.chomp.split.each do |each|

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'net_tester/sh'
 
-module NetTester
+module Phut
   # Open vSwitch controller
   class Switch
-    include Sh
-    extend Sh
+    include NetTester::Sh
+    extend NetTester::Sh
 
     PREFIX = 'nts'
 

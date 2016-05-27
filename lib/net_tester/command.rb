@@ -89,7 +89,7 @@ module NetTester
     end
 
     def self.kill
-      Switch.destroy_all
+      Phut::Switch.destroy_all
       TestSwitch.destroy_all
       PhysicalTestSwitch.destroy_all
       Host.destroy_all
