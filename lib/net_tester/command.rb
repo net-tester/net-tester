@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+require 'active_flow'
 require 'faker'
 require 'net_tester/dir'
-require 'net_tester/host'
 require 'net_tester/physical_test_switch'
 require 'net_tester/sh'
 require 'net_tester/test_switch'
 require 'phut'
+require 'phut/host'
 require 'phut/link'
 require 'trema'
 
@@ -27,11 +28,11 @@ module NetTester
         host_name = "host#{each}"
         port_name = "port#{each}"
         link = Phut::Link.create(host_name, port_name)
-        Host.create(name: host_name,
-                    ip_address: ip_address[each - 1],
-                    mac_address: mac_address[each - 1],
-                    device: link.device(host_name),
-                    arp_entries: arp_entries)
+        Phut::Host.create(name: host_name,
+                          ip_address: ip_address[each - 1],
+                          mac_address: mac_address[each - 1],
+                          device: link.device(host_name),
+                          arp_entries: arp_entries)
         @@test_switch.add_numbered_port each, link.device(port_name)
       end
     end
@@ -43,7 +44,7 @@ module NetTester
     # TODO: Raise if vport or port not found
     # TODO: Raise if NetTester is not running
     def self.add(vport, port)
-      mac_address = Host.find_by(name: "host#{vport}").mac_address
+      mac_address = Phut::Host.find_by(name: "host#{vport}").mac_address
       Trema.trema_process('NetTesterController', socket_dir).controller
            .create_patch(source_port: vport,
                          source_mac_address: mac_address,
@@ -51,7 +52,7 @@ module NetTester
     end
 
     def self.delete(vport, port)
-      mac_address = Host.find_by(name: "host#{vport}").mac_address
+      mac_address = Phut::Host.find_by(name: "host#{vport}").mac_address
       Trema.trema_process('NetTesterController', socket_dir).controller
            .destroy_patch(source_port: vport,
                           source_mac_address: mac_address,
@@ -64,21 +65,21 @@ module NetTester
 
     # TODO: Raise if source_name or dest_name not found
     def self.send_packet(source_name, dest_name)
-      source = Host.find_by(name: source_name)
-      dest = Host.find_by(name: dest_name)
+      source = Phut::Host.find_by(name: source_name)
+      dest = Phut::Host.find_by(name: dest_name)
       source.send_packet(dest)
     end
 
     def self.packets_sent(source_name, dest_name)
-      source = Host.find_by(name: source_name)
-      dest = Host.find_by(name: dest_name)
+      source = Phut::Host.find_by(name: source_name)
+      dest = Phut::Host.find_by(name: dest_name)
       source.packets_sent_to(dest).size
     end
 
     # TODO: Raise if dest_name or source_name not found
     def self.packets_received(dest_name, source_name)
-      dest = Host.find_by(name: dest_name)
-      source = Host.find_by(name: source_name)
+      dest = Phut::Host.find_by(name: dest_name)
+      source = Phut::Host.find_by(name: source_name)
       dest.packets_received_from(source).size
     end
 
@@ -92,7 +93,7 @@ module NetTester
       Phut::Switch.destroy_all
       TestSwitch.destroy_all
       PhysicalTestSwitch.destroy_all
-      Host.destroy_all
+      Phut::Host.destroy_all
       Phut::Link.destroy_all
       # TODO: Remove rescue
       begin

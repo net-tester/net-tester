@@ -5,12 +5,12 @@ require 'net_tester/sh'
 require 'phut/vhost'
 require 'phut/vhost_daemon'
 
-module NetTester
+module Phut
   # Virtual host for NetTester
   class Host
-    include Sh
-    include Dir
-    extend Dir
+    include NetTester::Sh
+    include NetTester::Dir
+    extend NetTester::Dir
 
     attr_reader :name
     attr_reader :ip_address

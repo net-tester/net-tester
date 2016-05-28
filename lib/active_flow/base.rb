@@ -1,10 +1,13 @@
 # frozen_string_literal: true
+require 'phut/host'
 require 'pio'
 require 'trema/controller'
 
 module ActiveFlow
   # Base class of flow entries
   class Base
+    include Phut
+
     # OpenFlow1.0 FlowMod options
     class FlowModAddOption
       def initialize(user_options)
@@ -42,7 +45,6 @@ module ActiveFlow
     end
 
     include Pio::OpenFlow10
-    include NetTester
 
     def self.send_flow_mod_add(datapath_id, options)
       send_message datapath_id, FlowMod.new(FlowModAddOption.new(options).to_hash)
