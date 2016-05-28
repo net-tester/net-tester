@@ -8,10 +8,12 @@ Bundler.setup :default
 
 require 'gli'
 require 'net_tester/command'
+require 'phut/host'
 
 module NetTester
   # net_tester command
   module App
+    include Phut
     extend GLI::App
 
     desc 'Runs NetTester'

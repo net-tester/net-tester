@@ -1,12 +1,12 @@
 # coding: utf-8
 # frozen_string_literal: true
 require 'faker'
-require 'net_tester/host'
+require 'phut/host'
 require 'phut/link'
 
-module NetTester
+module Phut
   describe Host do
-    include Dir
+    include NetTester::Dir
 
     def destroy_all_host
       ::Dir.glob(File.join(socket_dir, 'vhost.*.ctl')).each do |each|
