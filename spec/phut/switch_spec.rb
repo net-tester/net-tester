@@ -6,82 +6,72 @@ module Phut
   describe Switch do
     def delete_all_bridge
       `sudo ovs-vsctl list-br`.chomp.split.each do |each|
-        next unless /^nts/=~ each
+        next unless /^#{Switch.prefix}/ =~ each
         system "sudo ovs-vsctl del-br #{each}"
       end
     end
 
-    after(:all) { delete_all_bridge }
+    after(:each) { delete_all_bridge }
 
-    context 'with no switch' do
-      Given { delete_all_bridge }
+    describe '.all' do
+      When(:all) { Switch.all }
 
-      describe '.all' do
-        When(:all) { Switch.all }
+      context 'when there is no switch' do
         Then { all == [] }
       end
 
-      describe '.create' do
-        context 'with dpid: 0xc001' do
-          When(:switch) { Switch.create dpid: 0xc001 }
-          When(:all) { Switch.all }
-          Then { all.size == 1 }
-          Then { all.first.dpid == 0xc001 }
-          Then { all.first.running? == true }
-
-          describe '#add_port' do
-            context "with 'port1'" do
-              When { switch.add_port 'port1' }
-              Then { switch.ports == ['port1'] }
-            end
-          end
-
-          describe '#stop' do
-            When { switch.stop }
-            Then { Switch.all.empty? }
-          end
-        end
-      end
-
-      describe '.destroy_all' do
-        When { Switch.destroy_all }
-        When(:all) { Switch.all }
-        Then { all == [] }
+      context 'when there is a switch (dpid = 0xc001)' do
+        Given { Switch.create dpid: 0xc001 }
+        Then { all.size == 1 }
+        Then { all.first.dpid == 0xc001 }
       end
     end
 
-    context 'with a switch (DPID = 0xdeadbeef)' do
-      Given { delete_all_bridge }
-      Given { system 'sudo ovs-vsctl add-br nts0xdeadbeef' }
+    describe '.create' do
+      context 'with dpid: 0xc001' do
+        When(:switch) { Switch.create dpid: 0xc001 }
 
-      describe '.all' do
-        When(:all) { Switch.all }
-
-        Then { all.size == 1 }
-        Then { all.first.dpid == 0xdeadbeef }
-      end
-
-      describe '.create' do
-        context 'with 0xcafebabe' do
-          When { Switch.create dpid: 0xcafebabe }
-          When(:all) { Switch.all }
-
-          Then { all.size == 2 }
-          Then { all.sort.first.dpid == 0xcafebabe }
-          Then { all.sort.second.dpid == 0xdeadbeef }
+        context 'when there is no switch' do
+          Then { switch.dpid == 0xc001 }
+          Then { switch.name == '0xc001' }
+          Then { switch.running? == true }
         end
 
-        context 'with 0xdeadbeef' do
-          When(:result) { Switch.create dpid: 0xdeadbeef }
-          Then { result == Failure(RuntimeError, /cannot create a bridge named nts0xdeadbeef/) }
+        context 'when there is a switch (dpid = 0xc001)' do
+          Given { Switch.create dpid: 0xc001 }
+          Then { switch == Failure(RuntimeError, /cannot create a bridge named nts0xc001/) }
         end
       end
 
-      describe '.destroy_all' do
-        When { Switch.destroy_all }
-        When(:all) { Switch.all }
-        Then { all == [] }
+      context "with name: 'dadi', dpid: 0xc001" do
+        When(:switch) { Switch.create name: 'dadi', dpid: 0xc001 }
+
+        context 'when there is no switch' do
+          Then { switch.name == 'dadi' }
+          Then { switch.dpid == 0xc001 }
+          Then { switch.running? == true }
+        end
       end
+    end
+
+    describe '.destroy_all' do
+      When { Switch.destroy_all }
+      Then { Switch.all == [] }
+    end
+
+    describe '#add_port' do
+      Given(:switch) { Switch.create dpid: 0xc001 }
+
+      context "with 'port1'" do
+        When { switch.add_port 'port1' }
+        Then { switch.ports == ['port1'] }
+      end
+    end
+
+    describe '#stop' do
+      Given(:switch) { Switch.create dpid: 0xc001 }
+      When { switch.stop }
+      Then { switch.running? == false }
     end
   end
 end

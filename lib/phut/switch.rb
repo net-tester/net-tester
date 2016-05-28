@@ -18,7 +18,13 @@ module Phut
 
     def self.all
       sudo('ovs-vsctl list-br').chomp.split.map do |each|
-        /^#{prefix}(\S+)/ =~ each ? new(dpid: Regexp.last_match(1).hex) : nil
+        dpid = ('0x' + sudo("ovs-vsctl get bridge #{each} datapath-id").delete('"')).hex
+        case each
+        when /^#{prefix}(0x\S+)/
+          new(dpid: dpid) if dpid == Regexp.last_match(1).hex
+        when /^#{prefix}(\S+)/
+          new(name: Regexp.last_match(1), dpid: dpid)
+        end
       end.compact
     end
 
@@ -32,9 +38,14 @@ module Phut
 
     attr_reader :dpid
 
-    def initialize(dpid:, port: 6653)
+    def initialize(dpid:, name: nil, port: 6653)
       @dpid = dpid
+      @name = name
       @port = port
+    end
+
+    def name
+      @name || format('%#x', @dpid)
     end
 
     def start
@@ -99,7 +110,7 @@ module Phut
 
     def bridge_name
       raise 'DPID is not set' unless @dpid
-      self.class.prefix + format('%#x', @dpid)
+      self.class.prefix + name
     end
 
     def dpid_zero_filled
