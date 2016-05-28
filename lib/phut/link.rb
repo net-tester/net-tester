@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'phut/sh'
+require 'phut/shell_runner'
 require 'phut/virtual_link'
 
 module Phut
@@ -7,7 +7,7 @@ module Phut
   class Link
     LINK_DEVICE_PREFIX = 'lnk'
 
-    extend Sh
+    extend ShellRunner
 
     def self.all
       link = Hash.new { [] }

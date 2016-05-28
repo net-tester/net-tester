@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'phut/sh'
+require 'phut/shell_runner'
 
 module Phut
   # Network virtual link.
   class VirtualLink
-    include Sh
+    include ShellRunner
 
     attr_reader :device_a
     attr_reader :device_b

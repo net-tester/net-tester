@@ -7,14 +7,14 @@ require 'net_tester/test_switch'
 require 'phut'
 require 'phut/host'
 require 'phut/link'
-require 'phut/sh'
+require 'phut/shell_runner'
 require 'trema'
 
 module NetTester
   # net_tester sub-commands
   module Command
     extend Dir
-    extend Phut::Sh
+    extend Phut::ShellRunner
 
     def self.run(nhost, dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')

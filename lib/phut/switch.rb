@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'phut/sh'
+require 'phut/shell_runner'
 
 module Phut
   # Open vSwitch controller
   class Switch
-    include Sh
-    extend Sh
+    include ShellRunner
+    extend ShellRunner
 
     PREFIX = 'nts'
 
