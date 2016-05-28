@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'net_tester/sh'
+require 'phut/sh'
 
 module Phut
   # Open vSwitch controller
   class Switch
-    include NetTester::Sh
-    extend NetTester::Sh
+    include Sh
+    extend Sh
 
     PREFIX = 'nts'
 

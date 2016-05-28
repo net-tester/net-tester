@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'open3'
 
-module NetTester
+module Phut
   # Utility methods for running external commands
   module Sh
     def sudo(command)

@@ -1,14 +1,14 @@
 # coding: utf-8
 # frozen_string_literal: true
 require 'net_tester/dir'
-require 'net_tester/sh'
+require 'phut/sh'
 require 'phut/vhost'
 require 'phut/vhost_daemon'
 
 module Phut
   # Virtual host for NetTester
   class Host
-    include NetTester::Sh
+    include Sh
     include NetTester::Dir
     extend NetTester::Dir
 
