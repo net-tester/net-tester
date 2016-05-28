@@ -2,7 +2,6 @@
 require 'active_flow'
 require 'faker'
 require 'net_tester/dir'
-require 'net_tester/physical_test_switch'
 require 'net_tester/test_switch'
 require 'phut'
 require 'phut/host'
@@ -92,7 +91,6 @@ module NetTester
     def self.kill
       Phut::Switch.destroy_all
       TestSwitch.destroy_all
-      PhysicalTestSwitch.destroy_all
       Phut::Host.destroy_all
       Phut::Link.destroy_all
       # TODO: Remove rescue

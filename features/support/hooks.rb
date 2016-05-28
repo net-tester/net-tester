@@ -4,7 +4,8 @@ Before do
 end
 
 After do
-  NetTester::Command.kill
+  Command.kill
+  PhysicalTestSwitch.destroy_all
 
   # FIXME: Trema.kill_all
   begin
