@@ -4,6 +4,6 @@ require 'phut/switch'
 module NetTester
   # NetTester physical OpenFlow Switch
   class PhysicalTestSwitch < Phut::Switch
-    PREFIX = 'psw'
+    name_prefix 'physw_'
   end
 end

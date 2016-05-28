@@ -1,17 +1,24 @@
 # frozen_string_literal: true
+require 'active_support/core_ext/class/attribute'
 require 'phut/shell_runner'
 
 module Phut
   # Open vSwitch controller
   class Switch
+    class_attribute :prefix
+
     include ShellRunner
     extend ShellRunner
 
-    PREFIX = 'nts'
+    def self.name_prefix(name)
+      self.prefix = name
+    end
+
+    name_prefix 'nts'
 
     def self.all
       sudo('ovs-vsctl list-br').chomp.split.map do |each|
-        /^#{PREFIX}(\S+)/ =~ each ? new(dpid: Regexp.last_match(1).hex) : nil
+        /^#{prefix}(\S+)/ =~ each ? new(dpid: Regexp.last_match(1).hex) : nil
       end.compact
     end
 
@@ -92,7 +99,7 @@ module Phut
 
     def bridge_name
       raise 'DPID is not set' unless @dpid
-      PREFIX + format('%#x', @dpid)
+      self.class.prefix + format('%#x', @dpid)
     end
 
     def dpid_zero_filled
