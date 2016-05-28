@@ -3,18 +3,18 @@ require 'active_flow'
 require 'faker'
 require 'net_tester/dir'
 require 'net_tester/physical_test_switch'
-require 'net_tester/sh'
 require 'net_tester/test_switch'
 require 'phut'
 require 'phut/host'
 require 'phut/link'
+require 'phut/sh'
 require 'trema'
 
 module NetTester
   # net_tester sub-commands
   module Command
     extend Dir
-    extend Sh
+    extend Phut::Sh
 
     def self.run(nhost, dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')

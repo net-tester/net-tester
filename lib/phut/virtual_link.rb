@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'net_tester/sh'
+require 'phut/sh'
 
 module Phut
   # Network virtual link.
   class VirtualLink
-    include NetTester::Sh
+    include Sh
 
     attr_reader :device_a
     attr_reader :device_b
