@@ -60,6 +60,16 @@ $ ./bin/net_tester add --vport 2 --port 1
 
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/add_example.png)
 
+## net_tester delete [オプション]
+パッチを追加する
+
+```shellsession
+$ ./bin/net_tester delete --vport 2 --port 1
+```
+
+* --vport: 仮想スイッチのポート番号
+* --port: 物理スイッチのポート番号
+
 ## net_tester send [オプション]
 パケットを送信する
 
