@@ -61,7 +61,7 @@ $ ./bin/net_tester add --vport 2 --port 1
 ![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/add_example.png)
 
 ## net_tester delete [オプション]
-パッチを追加する
+パッチを削除する
 
 ```shellsession
 $ ./bin/net_tester delete --vport 2 --port 1
