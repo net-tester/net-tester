@@ -54,6 +54,13 @@ module Phut
       end
     end
 
+    describe '.find_by' do
+      Given { Switch.create name: 'dadi', dpid: 0xc001 }
+      When(:result) { Switch.find_by name: 'dadi' }
+      Then { result.name == 'dadi' }
+      Then { result.dpid == 0xc001 }
+    end
+
     describe '.destroy_all' do
       When { Switch.destroy_all }
       Then { Switch.all == [] }

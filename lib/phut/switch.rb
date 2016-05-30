@@ -28,6 +28,12 @@ module Phut
       end.compact
     end
 
+    def self.find_by(queries)
+      queries.inject(all) do |memo, (attr, value)|
+        memo.find_all { |switch| switch.__send__(attr) == value }
+      end.first
+    end
+
     def self.create(*args)
       new(*args).tap(&:start)
     end
