@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-
 require 'rubygems'
 require 'bundler'
 Bundler.setup :default
+
+# To override phut/lib/phut with net_tester/lib/phut
+$LOAD_PATH.unshift File.expand_path(File.join(__dir__, '..', 'lib'))
 
 require 'gli'
 require 'net_tester/command'
