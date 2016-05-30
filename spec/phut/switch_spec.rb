@@ -61,6 +61,12 @@ module Phut
       Then { result.dpid == 0xc001 }
     end
 
+    describe 'dump_flows' do
+      Given { Switch.create name: 'dadi', dpid: 0xc001 }
+      When(:result) { Switch.dump_flows 'dadi' }
+      Then { result == '' }
+    end
+
     describe '.destroy_all' do
       When { Switch.destroy_all }
       Then { Switch.all == [] }

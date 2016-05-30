@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'active_support/core_ext/class/attribute'
 require 'phut/shell_runner'
+require 'pio'
 
 module Phut
   # Open vSwitch controller
@@ -34,8 +35,16 @@ module Phut
       end.first
     end
 
+    def self.find_by!(queries)
+      find_by(queries) || raise("Swtich not found: #{queries.inspect}")
+    end
+
     def self.create(*args)
       new(*args).tap(&:start)
+    end
+
+    def self.dump_flows(name)
+      find_by!(name: name).dump_flows
     end
 
     def self.destroy_all
@@ -82,6 +91,13 @@ module Phut
     def running?
       system("sudo ovs-vsctl br-exists #{bridge_name}") &&
         !sudo("ovs-vsctl get-controller #{bridge_name}").empty?
+    end
+
+    def dump_flows
+      output = sudo "ovs-ofctl dump-flows #{bridge_name} -O #{Pio::OpenFlow.version}"
+      output.split("\n").inject('') do |memo, each|
+        memo + ((/^(NXST|OFPST)_FLOW reply/=~ each) ? '' : each.lstrip + "\n")
+      end
     end
 
     def <=>(other)
