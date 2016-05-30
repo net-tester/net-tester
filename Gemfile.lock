@@ -1,7 +1,5 @@
-GIT
-  remote: git://github.com/trema/phut.git
-  revision: 8fbf783485af7aa99c1660a69bdd684d9d87472c
-  branch: develop
+PATH
+  remote: ../phut
   specs:
     phut (0.7.7)
       activesupport (~> 4.2, >= 4.2.5)

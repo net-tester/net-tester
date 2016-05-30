@@ -34,7 +34,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'faker'
 gem 'gli'
-gem 'phut', github: 'trema/phut', branch: 'develop'
+# gem 'phut', github: 'trema/phut', branch: 'develop'
+gem 'phut', path: '../phut'
 gem 'pio'
 gem 'trema'
 
