@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'net_tester'
-require 'phut/switch'
+require 'phut'
 
 module NetTester
   # NetTester physical OpenFlow switch

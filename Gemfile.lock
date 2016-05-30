@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/trema/phut.git
-  revision: 0cd59b3ac5236a9b151fcd44aa519489745b9441
+  revision: 8fbf783485af7aa99c1660a69bdd684d9d87472c
   branch: develop
   specs:
     phut (0.7.7)
@@ -61,7 +61,7 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
-    byebug (9.0.4)
+    byebug (9.0.5)
     capybara (2.7.1)
       addressable
       mime-types (>= 1.16)
