@@ -3,9 +3,14 @@ require 'net_tester'
 require 'phut/switch'
 
 module NetTester
-  # NetTester physical OpenFlow Switch
+  # NetTester physical OpenFlow switch
   class PhysicalTestSwitch < Phut::Switch
     name_prefix 'physw_'
+  end
+
+  # Testee physical switch
+  class TesteeSwitch < Phut::Switch
+    name_prefix 'testee_'
   end
 end
 

@@ -6,6 +6,7 @@ end
 After do
   Command.kill
   PhysicalTestSwitch.destroy_all
+  TesteeSwitch.destroy_all
 
   # FIXME: Trema.kill_all
   begin

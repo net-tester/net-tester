@@ -20,14 +20,14 @@ Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起�
 end
 
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
-  Phut::Switch.create(dpid: 0x1, port: 6654)
+  TesteeSwitch.create(dpid: 0x1, port: 6654)
   cd('.') do
     step %(I successfully run `bundle exec trema run ../../fixtures/packet_in_logger.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
   end
 end
 
 Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
-  Phut::Switch.create(dpid: 0x1, port: 6654)
+  TesteeSwitch.create(dpid: 0x1, port: 6654)
   cd('.') do
     step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
   end
@@ -42,7 +42,7 @@ Given(/^NetTester 物理スイッチとテスト対象のスイッチを次の�
     link = Phut::Link.create(tport_name, port_name)
     @physical_test_switch.add_numbered_port(pport_id, link.device(port_name))
     # FIXME: Switch.find_by(name: testee_switch.name).add_port ...
-    Phut::Switch.all.first.add_numbered_port tport_id, link.device(tport_name)
+    TesteeSwitch.all.first.add_numbered_port tport_id, link.device(tport_name)
   end
 end
 
@@ -78,7 +78,7 @@ Then(/^OpenFlow コントローラが停止$/) do
 end
 
 Then(/^すべてのスイッチが停止$/) do
-  expect(Phut::Switch.all).to be_empty
+  expect(TesteeSwitch.all).to be_empty
 end
 
 Then(/^次の仮想ホストがすべて停止:$/) do |hosts|

@@ -14,7 +14,7 @@ module Phut
       self.prefix = name
     end
 
-    name_prefix 'nts'
+    name_prefix ''
 
     def self.all
       sudo('ovs-vsctl list-br').chomp.split.map do |each|

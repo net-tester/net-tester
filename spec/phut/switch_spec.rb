@@ -39,7 +39,7 @@ module Phut
 
         context 'when there is a switch (dpid = 0xc001)' do
           Given { Switch.create dpid: 0xc001 }
-          Then { switch == Failure(RuntimeError, /cannot create a bridge named nts0xc001/) }
+          Then { switch == Failure(RuntimeError, /cannot create a bridge named 0xc001/) }
         end
       end
 
