@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'phut/host'
+require 'phut/vhost'
 require 'pio'
 require 'trema/controller'
 

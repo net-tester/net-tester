@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'active_flow/base'
-require 'phut/host'
+require 'phut/vhost'
 
 $LOAD_PATH.unshift File.join(__dir__, '..')
 

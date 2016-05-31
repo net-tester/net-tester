@@ -17,4 +17,3 @@ module NetTester
 end
 
 include NetTester
-include NetTester::Dir

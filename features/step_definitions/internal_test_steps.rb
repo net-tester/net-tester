@@ -22,14 +22,14 @@ end
 Given(/^テスト対象のネットワークに PacketIn を調べる OpenFlow スイッチ$/) do
   @testee_switch = TesteeSwitch.create(dpid: 0x1, tcp_port: 6654)
   cd('.') do
-    step %(I successfully run `bundle exec trema run ../../fixtures/packet_in_logger.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
+    step %(I successfully run `bundle exec trema run ../../fixtures/packet_in_logger.rb --port 6654 -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon`)
   end
 end
 
 Given(/^テスト対象のネットワークにイーサネットスイッチが 1 台$/) do
   @testee_switch = TesteeSwitch.create(dpid: 0x1, tcp_port: 6654)
   cd('.') do
-    step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{log_dir} -P #{pid_dir} -S #{socket_dir} --daemon`)
+    step %(I successfully run `bundle exec trema run ../../vendor/learning_switch/lib/learning_switch.rb --port 6654 -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon`)
   end
 end
 
@@ -57,9 +57,9 @@ end
 Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:$/) do |table|
   table.hashes.each do |each|
     if each['VLAN ID']
-      step %(the file "#{File.join log_dir, 'PacketInLogger.log'}" should contain "PACKET_IN: Port = #{each['Port']}, VLAN ID = #{each['VLAN ID']}")
+      step %(the file "./log/PacketInLogger.log" should contain "PACKET_IN: Port = #{each['Port']}, VLAN ID = #{each['VLAN ID']}")
     else
-      step %(the file "#{File.join log_dir, 'PacketInLogger.log'}" should contain "PACKET_IN: Port = #{each['Port']}")
+      step %(the file "./log/PacketInLogger.log" should contain "PACKET_IN: Port = #{each['Port']}")
     end
   end
 end
@@ -67,7 +67,9 @@ end
 Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn は届かない:$/) do |table|
   table.hashes.each do |each|
     cd('.') do
-      expect(IO.readlines("#{log_dir}/PacketInLogger.log").any? { |line| /PACKET_IN #{each['port']}/ =~ line }).to be false
+      expect(IO.readlines('./log/PacketInLogger.log').any? do |line|
+               /PACKET_IN #{each['port']}/ =~ line
+             end).to be false
     end
   end
 end

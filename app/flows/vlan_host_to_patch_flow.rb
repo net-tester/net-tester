@@ -3,6 +3,6 @@ class VlanHostToPatchFlow < ActiveFlow::Base
     send_flow_mod_add(0xdad1c001,
                       match: Match.new(in_port: in_port),
                       actions: [SetVlanVid.new(vlan_id),
-                                SendOutPort.new(Host.all.size + 1)])
+                                SendOutPort.new(Vhost.all.size + 1)])
   end
 end
