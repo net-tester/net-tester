@@ -1,11 +1,24 @@
-PATH
-  remote: ../phut
+GIT
+  remote: git://github.com/trema/phut.git
+  revision: 5055aaed0e36d7724b84edc79cae1b981e92e0ac
+  branch: develop
   specs:
     phut (0.7.7)
-      activesupport (~> 4.2, >= 4.2.5)
+      activesupport (~> 4.2.6)
       gli (~> 2.13.4)
       pio (~> 0.30.0)
       pry (~> 0.10.3)
+
+GIT
+  remote: git://github.com/trema/trema.git
+  revision: 39970844b0afc94d08173771a21a25a2daa314d5
+  branch: develop
+  specs:
+    trema (0.10.1)
+      bundler (~> 1.11.2)
+      gli (~> 2.13.4)
+      phut (~> 0.7.7)
+      pio (~> 0.30.0)
 
 GEM
   remote: https://rubygems.org/
@@ -54,7 +67,7 @@ GEM
       ffi (~> 1.9.10)
       rspec-expectations (>= 2.99)
       thor (~> 0.19)
-    ast (2.2.0)
+    ast (2.3.0)
     bindata (2.1.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
@@ -72,16 +85,16 @@ GEM
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
     contracts (0.14.0)
-    cucumber (2.3.3)
+    cucumber (2.4.0)
       builder (>= 2.1.2)
-      cucumber-core (~> 1.4.0)
+      cucumber-core (~> 1.5.0)
       cucumber-wire (~> 0.0.1)
       diff-lcs (>= 1.1.3)
-      gherkin (~> 3.2.0)
+      gherkin (~> 4.0)
       multi_json (>= 1.7.5, < 2.0)
       multi_test (>= 0.1.2)
-    cucumber-core (1.4.0)
-      gherkin (~> 3.2.0)
+    cucumber-core (1.5.0)
+      gherkin (~> 4.0)
     cucumber-rails (1.4.3)
       capybara (>= 1.1.2, < 3)
       cucumber (>= 1.3.8, < 3)
@@ -98,7 +111,7 @@ GEM
     faker (1.6.3)
       i18n (~> 0.5)
     ffi (1.9.10)
-    gherkin (3.2.0)
+    gherkin (4.0.0)
     given_core (3.8.0)
       sorcerer (>= 0.3.7)
     gli (2.13.4)
@@ -114,17 +127,19 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.0.0)
+    mini_portile2 (2.1.0)
     minitest (5.9.0)
     multi_json (1.12.1)
     multi_test (0.1.2)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
-    parser (2.3.1.0)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
+    parser (2.3.1.2)
       ast (~> 2.2)
     pio (0.30.0)
       activesupport (~> 4.2, >= 4.2.4)
       bindata (~> 2.1.0)
+    pkg-config (1.1.7)
     powerpack (0.1.1)
     pry (0.10.3)
       coderay (~> 1.1.0)
@@ -158,7 +173,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rainbow (2.1.0)
-    rake (11.1.2)
+    rake (11.2.2)
     rdoc (4.2.2)
       json (~> 1.4)
     rspec (3.4.0)
@@ -208,11 +223,6 @@ GEM
     sqlite3 (1.3.11)
     thor (0.19.1)
     thread_safe (0.3.5)
-    trema (0.10.1)
-      bundler (~> 1.11.2)
-      gli (~> 2.13.4)
-      phut (~> 0.7.7)
-      pio (~> 0.30.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unicode-display_width (1.0.5)
@@ -245,7 +255,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   spring
   sqlite3
-  trema
+  trema!
   web-console (~> 2.0)
 
 BUNDLED WITH

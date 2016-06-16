@@ -10,8 +10,9 @@ $LOAD_PATH.unshift File.expand_path(File.join(__dir__, '..', 'lib'))
 
 require 'gli'
 require 'net_tester/command'
-require 'phut/vhost'
+require 'net_tester/version'
 require 'phut/setting'
+require 'phut/vhost'
 
 FileUtils.mkdir_p('./log') unless File.exist?('./log')
 FileUtils.mkdir_p('./tmp/pids') unless File.exist?('./tmp/pids')
@@ -26,6 +27,11 @@ module NetTester
   module App
     include Phut
     extend GLI::App
+
+    desc 'Displays the current runtime version'
+    program_desc 'Network acceptance test framework'
+
+    version NetTester::VERSION
 
     desc 'Runs NetTester'
     command :run do |c|

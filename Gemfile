@@ -34,10 +34,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'faker'
 gem 'gli'
-# gem 'phut', github: 'trema/phut', branch: 'develop'
-gem 'phut', path: '../phut'
+gem 'phut', github: 'trema/phut', branch: 'develop'
 gem 'pio'
-gem 'trema'
+gem 'trema', github: 'trema/trema', branch: 'develop'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
