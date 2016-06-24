@@ -51,7 +51,16 @@ module NetTester
         exit_now!('--nhost must be > 0') if options[:nhost].to_i <= 0
         exit_now!('NetTester is already running') if Command.running?
 
-        Command.run options[:nhost].to_i, options[:dpid].hex, options[:vlan]
+        Command.run options[:dpid].hex, options[:vlan]
+        ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
+        mac_address = Array.new(nhost) { Faker::Internet.mac_address }
+        arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
+        1.upto(options[:nhost].to_i).each do |each|
+          add_host(host_name: "host#{each}",
+                   ip_address: ip_address[each - 1],
+                   mac_address: mac_address[each - 1],
+                   arp_entries: arp_entries)
+        end
         Command.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end

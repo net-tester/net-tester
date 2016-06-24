@@ -1,8 +1,9 @@
 Feature: イーサネットスイッチをテスト
   Background:
-    Given テスト対象のネットワークにイーサネットスイッチが 1 台
-    And DPID が 0x123 の NetTester 物理スイッチ
-    And NetTester でテストホスト 2 台を起動
+    Given イーサネットスイッチ (DPID = "0x1", tcp_port = 6654)
+    And NetTester 物理スイッチ (DPID = "0x123")
+    And NetTester を DPID = "0x123" で起動
+    And NetTester のホスト 2 台を起動
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
       | Physical Port | Testee Port |
       |             1 |           1 |

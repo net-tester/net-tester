@@ -14,6 +14,11 @@ module NetTester
   class TesteeSwitch < Phut::OpenVswitch
     name_prefix 'testee_'
   end
+
+  # Testee firewall switch
+  class TesteeFirewall < Phut::OpenVswitch
+    name_prefix 'fw_'
+  end
 end
 
 include NetTester

@@ -14,25 +14,28 @@ module NetTester
   module Command
     extend Phut::ShellRunner
 
-    def self.run(nhost, dpid, vlan = '')
+    def self.run(dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
       sh "bundle exec trema run #{controller_file} -L #{File.expand_path Phut.log_dir} -P #{File.expand_path Phut.pid_dir} -S #{File.expand_path Phut.socket_dir} --daemon -- #{dpid} #{vlan}"
       @@test_switch = TestSwitch.create(dpid: 0xdad1c001)
+    end
 
-      ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
-      mac_address = Array.new(nhost) { Faker::Internet.mac_address }
-      arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
-      1.upto(nhost).each do |each|
-        host_name = "host#{each}"
-        port_name = "port#{each}"
-        link = Phut::Link.create(host_name, port_name)
-        Phut::Vhost.create(name: host_name,
-                           ip_address: ip_address[each - 1],
-                           mac_address: mac_address[each - 1],
-                           device: link.device(host_name),
-                           arp_entries: arp_entries)
-        @@test_switch.add_numbered_port each, link.device(port_name)
-      end
+    def self.add_host(host_name:,
+                      ip_address: Faker::Internet.ip_v4_address,
+                      mac_address: Faker::Internet.mac_address,
+                      arp_entries: nil)
+      port_name = "port_#{host_name}"
+      link = Phut::Link.create(host_name, port_name)
+      Phut::Vhost.create(name: host_name,
+                         ip_address: ip_address,
+                         mac_address: mac_address,
+                         device: link.device(host_name),
+                         arp_entries: arp_entries)
+      @@test_switch.add_port link.device(port_name)
+    end
+
+    def self.add_netns(name:, ip_address: Faker::Internet.ip_v4_address)
+      Phut::Netns.create(name: name, ip_address: ip_address, netmask: '255.255.255.0')
     end
 
     def self.connect_switch(device:, port_number:)
@@ -41,11 +44,10 @@ module NetTester
 
     # TODO: Raise if vport or port not found
     # TODO: Raise if NetTester is not running
-    def self.add(vport, port)
-      mac_address = Phut::Vhost.find_by(name: "host#{vport}").mac_address
+    def self.add(mac_address, vport, port)
       Trema.trema_process('NetTesterController', Phut.socket_dir).controller
-           .create_patch(source_port: vport,
-                         source_mac_address: mac_address,
+           .create_patch(source_mac_address: mac_address,
+                         source_port: vport,
                          destination_port: port)
     end
 
@@ -91,6 +93,7 @@ module NetTester
       TestSwitch.destroy_all
       Phut::Vhost.destroy_all
       Phut::Link.destroy_all
+      Phut::Netns.destroy_all
       # TODO: Remove rescue
       begin
         Trema.trema_process('NetTesterController', Phut.socket_dir).killall

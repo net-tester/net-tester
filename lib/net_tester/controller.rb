@@ -24,6 +24,10 @@ class NetTesterController < Trema::Controller
     logger.info "Switch #{dpid.to_hex} connected"
   end
 
+  def packet_in(dpid, message)
+    logger.info "packet_in: DPID=#{dpid.to_hex}, data=#{message.data.inspect}"
+  end
+
   def create_patch(source_port:, source_mac_address:, destination_port:)
     Patch.create(physical_switch_dpid: @physical_switch_dpid,
                  vlan_id: @vlan_id[source_port],
