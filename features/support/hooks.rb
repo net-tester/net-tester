@@ -1,4 +1,7 @@
 # coding: utf-8
+# frozen_string_literal: true
+
+# rubocop:disable MethodLength
 def cleanup
   Command.kill
   PhysicalTestSwitch.destroy_all
@@ -28,6 +31,7 @@ def cleanup
     true
   end
 end
+# rubocop:enable MethodLength
 
 # frozen_string_literal: true
 Before do
@@ -62,13 +66,9 @@ After do
   Phut.socket_dir = './tmp/sockets'
 
   pid = `sudo ip netns exec server lsof -i tcp:8080 -t`
-  unless pid.empty?
-    system "sudo ip netns exec server kill -9 #{pid}"
-  end
+  system "sudo ip netns exec server kill -9 #{pid}" unless pid.empty?
   pid = `sudo ip netns exec server lsof -i tcp:3000 -t`
-  unless pid.empty?
-    system "sudo ip netns exec server kill -9 #{pid}"
-  end
+  system "sudo ip netns exec server kill -9 #{pid}" unless pid.empty?
 
   cleanup
 
