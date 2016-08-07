@@ -20,6 +20,14 @@ GIT
       phut (~> 0.7.7)
       pio (~> 0.30.0)
 
+PATH
+  remote: .
+  specs:
+    net_tester (0.2.0)
+      faker (~> 1.6, >= 1.6)
+      gli (= 2.13.4)
+      pio (~> 0.30.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -243,10 +251,8 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   factory_girl
-  faker
-  gli
+  net_tester!
   phut!
-  pio
   rails (= 4.2.6)
   rspec-expectations
   rspec-given

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
 
+gemspec
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
@@ -32,10 +34,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'faker'
-gem 'gli'
 gem 'phut', github: 'trema/phut', branch: 'develop'
-gem 'pio'
 gem 'trema', github: 'trema/trema', branch: 'develop'
 
 group :development, :test do
