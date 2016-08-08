@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.email = ['yasuhito@gmail.com']
   gem.homepage = 'http://github.com/yasuhito/net_tester'
 
+  gem.executables = %w(net_tester)
   gem.files = %w(Rakefile net_tester.gemspec)
   gem.files += Dir.glob('lib/**/*.rb')
 
