@@ -14,14 +14,17 @@ module NetTester
   module Command
     extend Phut::ShellRunner
 
-    def self.run(nhost, dpid, vlan = '')
+    def self.run(dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
       sh "bundle exec trema run #{controller_file} -L #{File.expand_path Phut.log_dir} -P #{File.expand_path Phut.pid_dir} -S #{File.expand_path Phut.socket_dir} --daemon -- #{dpid} #{vlan}"
       @@test_switch = TestSwitch.create(dpid: 0xdad1c001)
+    end
 
+    def self.add_host(nhost)
       ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
       mac_address = Array.new(nhost) { Faker::Internet.mac_address }
       arp_entries = ip_address.zip(mac_address).map { |each| each.join('/') }.join(',')
+
       1.upto(nhost).each do |each|
         host_name = "host#{each}"
         port_name = "port#{each}"

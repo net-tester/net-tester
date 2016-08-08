@@ -45,13 +45,13 @@ module NetTester
       c.flag [:D, :dpid]
 
       c.action do |_global_options, options, _args|
-        raise '--nhost option is mandatory' if options[:nhost].nil?
         raise '--device option is mandatory' if options[:device].nil?
         raise '--dpid option is mandatory' if options[:dpid].nil?
-        exit_now!('--nhost must be > 0') if options[:nhost].to_i <= 0
+        exit_now!('--nhost must be > 0') if options[:nhost] && options[:nhost].to_i <= 0
         exit_now!('NetTester is already running') if Command.running?
 
-        Command.run options[:nhost].to_i, options[:dpid].hex, options[:vlan]
+        Command.run options[:dpid].hex, options[:vlan]
+        Command.add_host options[:nhost].to_i if options[:nhost]
         Command.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end
@@ -76,9 +76,7 @@ module NetTester
         if options[:port].to_i > Vhost.all.size
           exit_now!("#{options[:port]}: no such port")
         end
-        if options[:port].to_i < 0
-          exit_now!("#{options[:port]}: invalid port")
-        end
+        exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 0
 
         Command.add options[:vport].to_i, options[:port].to_i
       end
@@ -103,9 +101,7 @@ module NetTester
         if options[:port].to_i > Vhost.all.size
           exit_now!("#{options[:port]}: no such port")
         end
-        if options[:port].to_i < 0
-          exit_now!("#{options[:port]}: invalid port")
-        end
+        exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 0
 
         Command.delete options[:vport].to_i, options[:port].to_i
       end
@@ -140,9 +136,7 @@ module NetTester
         exit_now!('NetTester is not running') unless Command.running?
         help_now!('host is required') if args.empty?
         host = args.first
-        unless Vhost.find_by(name: host)
-          exit_now! %(#{host}: no such host)
-        end
+        exit_now! %(#{host}: no such host) unless Vhost.find_by(name: host)
 
         sent_desc = ''
         Vhost.all.each do |each|
