@@ -3,11 +3,12 @@ require 'active_flow'
 require 'faker'
 require 'net_tester/test_switch'
 require 'phut'
-require 'phut/vhost'
 require 'phut/link'
 require 'phut/setting'
 require 'phut/shell_runner'
+require 'phut/vhost'
 require 'trema'
+require 'trema/switch'
 
 module NetTester
   # net_tester sub-commands
@@ -16,7 +17,8 @@ module NetTester
 
     def self.run(dpid, vlan = '')
       controller_file = File.expand_path File.join(__dir__, 'controller.rb')
-      sh "bundle exec trema run #{controller_file} -L #{File.expand_path Phut.log_dir} -P #{File.expand_path Phut.pid_dir} -S #{File.expand_path Phut.socket_dir} --daemon -- #{dpid} #{vlan}"
+      Trema::Command.new.run([controller_file, dpid, vlan],
+                             daemonize: true, logging_level: ::Logger::INFO)
       @@test_switch = TestSwitch.create(dpid: 0xdad1c001)
     end
 
@@ -36,6 +38,16 @@ module NetTester
                            arp_entries: arp_entries)
         @@test_switch.add_numbered_port each, link.device(port_name)
       end
+    end
+
+    def self.add_netns(port_number:, name:, ip_address:, netmask:, route:)
+      port_name = "port#{port_number}"
+      link = Phut::Link.create(name, port_name)
+      Phut::Netns.create(name: name,
+                         ip_address: ip_address,
+                         netmask: netmask,
+                         route: route)
+      @@test_switch.add_numbered_port port_number, link.device(port_name)
     end
 
     def self.connect_switch(device:, port_number:)
