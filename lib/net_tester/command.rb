@@ -40,11 +40,12 @@ module NetTester
       end
     end
 
-    def self.add_netns(port_number:, name:, ip_address:, netmask:, route:)
+    def self.add_netns(port_number:, name:, ip_address:, mac_address:, netmask:, route:)
       port_name = "port#{port_number}"
       link = Phut::Link.create(name, port_name)
       netns = Phut::Netns.create(name: name,
                                  ip_address: ip_address,
+                                 mac_address: mac_address,
                                  netmask: netmask,
                                  route: route)
       @@test_switch.add_numbered_port port_number, link.device(port_name)
