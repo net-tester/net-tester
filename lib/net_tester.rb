@@ -30,6 +30,7 @@ module NetTester
                                netmask: netmask,
                                route: route)
     @@test_switch.add_numbered_port port_number, link.device(port_name)
+    netns.device = link.device(name)
     netns
   end
   # rubocop:enable ParameterLists
