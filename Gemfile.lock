@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/trema/phut.git
-  revision: 5055aaed0e36d7724b84edc79cae1b981e92e0ac
+  revision: bfa6335fa4bd2cc75636e4cff5408d521630f10a
   branch: develop
   specs:
     phut (0.7.7)
@@ -11,11 +11,11 @@ GIT
 
 GIT
   remote: git://github.com/trema/trema.git
-  revision: 39970844b0afc94d08173771a21a25a2daa314d5
+  revision: 265dc3762cdc1dc73c3f00a27fc8a04197f5f028
   branch: develop
   specs:
     trema (0.10.1)
-      bundler (~> 1.11.2)
+      bundler (>= 1.11.2, < 2.0)
       gli (~> 2.13.4)
       phut (~> 0.7.7)
       pio (~> 0.30.0)
@@ -149,7 +149,7 @@ GEM
       bindata (~> 2.1.0)
     pkg-config (1.1.7)
     powerpack (0.1.1)
-    pry (0.10.3)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)

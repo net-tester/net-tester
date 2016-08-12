@@ -23,29 +23,29 @@ Feature: "net_tester send" コマンド
       |            2 |             2 |
 
   Scenario: host1 の送受信パケット数を "net_tester stats host1" で表示
-    When コマンド `net_tester send --source host1 --dest host2` を実行
+    When コマンド `net_tester send --source host1 --dest host2 -S sockets` を実行
     Then 終了ステータスは 0
     And コマンドの出力はなし
-    When コマンド `net_tester stats host1` の実行に成功
-    Then コマンド "net_tester stats host1" の出力は次のとおり:
+    When コマンド `net_tester stats host1 -S sockets` の実行に成功
+    Then コマンド "net_tester stats host1 -S sockets" の出力は次のとおり:
       """
       Packets sent:
         host1 -> host2 = 1 packet
       """
-    When コマンド `net_tester stats host2` の実行に成功
-    Then コマンド "net_tester stats host2" の出力は次のとおり:
+    When コマンド `net_tester stats host2 -S sockets` の実行に成功
+    Then コマンド "net_tester stats host2 -S sockets" の出力は次のとおり:
       """
       Packets received:
         host1 -> host2 = 1 packet
       """
 
   Scenario: ホスト名を指定せず "net_tester send"
-    When コマンド `net_tester send` を実行
+    When コマンド `net_tester send -S sockets` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "--source option is mandatory" を含む
 
   Scenario: 不正なホスト名を指定
-    When コマンド `net_tester send --source NO_SUCH_HOST1 --dest NO_SUCH_HOST2` を実行
+    When コマンド `net_tester send --source NO_SUCH_HOST1 --dest NO_SUCH_HOST2 -S sockets` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "NO_SUCH_HOST1: no such host" を含む
 

@@ -9,7 +9,7 @@ Bundler.setup :default
 $LOAD_PATH.unshift File.expand_path(File.join(__dir__, '..', 'lib'))
 
 require 'gli'
-require 'net_tester/command'
+require 'net_tester'
 require 'net_tester/version'
 require 'phut/setting'
 require 'phut/vhost'
@@ -44,15 +44,26 @@ module NetTester
       c.desc 'dpid that physical switch uses'
       c.flag [:D, :dpid]
 
+      c.desc 'Location to put pid files'
+      c.flag [:P, :pid_dir], default_value: Trema::DEFAULT_PID_DIR
+      c.desc 'Location to put log files'
+      c.flag [:L, :log_dir], default_value: Trema::DEFAULT_LOG_DIR
+      c.desc 'Location to put socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
+
       c.action do |_global_options, options, _args|
+        Phut.pid_dir = options[:pid_dir]
+        Phut.log_dir = options[:log_dir]
+        Phut.socket_dir = options[:socket_dir]
+
         raise '--device option is mandatory' if options[:device].nil?
         raise '--dpid option is mandatory' if options[:dpid].nil?
         exit_now!('--nhost must be > 0') if options[:nhost] && options[:nhost].to_i <= 0
-        exit_now!('NetTester is already running') if Command.running?
+        exit_now!('NetTester is already running') if NetTester.running?
 
-        Command.run options[:dpid].hex, options[:vlan]
-        Command.add_host options[:nhost].to_i if options[:nhost]
-        Command.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
+        NetTester.run options[:dpid].hex, options[:vlan]
+        NetTester.add_host options[:nhost].to_i if options[:nhost]
+        NetTester.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end
 
@@ -62,9 +73,12 @@ module NetTester
       c.flag [:vport]
       c.desc 'port number of physical switch'
       c.flag [:port]
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
 
       c.action do |_global_options, options, _args|
-        exit_now!('NetTester is not running') unless Command.running?
+        Phut.socket_dir = options[:socket_dir]
+        exit_now!('NetTester is not running') unless NetTester.running?
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
         if options[:vport].to_i > Vhost.all.size
@@ -78,7 +92,7 @@ module NetTester
         end
         exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 0
 
-        Command.add options[:vport].to_i, options[:port].to_i
+        NetTester.add options[:vport].to_i, options[:port].to_i
       end
     end
 
@@ -88,8 +102,12 @@ module NetTester
       c.flag [:vport]
       c.desc 'port number of physical switch'
       c.flag [:port]
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
+
       c.action do |_global_options, options, _args|
-        exit_now!('NetTester is not running') unless Command.running?
+        Phut.socket_dir = options[:socket_dir]
+        exit_now!('NetTester is not running') unless NetTester.running?
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
         if options[:vport].to_i > Vhost.all.size
@@ -103,7 +121,7 @@ module NetTester
         end
         exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 0
 
-        Command.delete options[:vport].to_i, options[:port].to_i
+        NetTester.delete options[:vport].to_i, options[:port].to_i
       end
     end
 
@@ -113,9 +131,12 @@ module NetTester
       c.flag [:s, :source]
       c.desc 'host that receives packets'
       c.flag [:d, :dest]
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
 
       c.action do |_global_options, options, _args|
-        exit_now!('NetTester is not running') unless Command.running?
+        Phut.socket_dir = options[:socket_dir]
+        exit_now!('NetTester is not running') unless NetTester.running?
         exit_now! '--source option is mandatory' if options[:source].nil?
         exit_now! '--dest option is mandatory' if options[:dest].nil?
         unless Vhost.find_by(name: options[:source])
@@ -125,15 +146,19 @@ module NetTester
           exit_now! %(#{options[:dest]}: no such host)
         end
 
-        Command.send_packet options[:source], options[:dest]
+        NetTester.send_packet options[:source], options[:dest]
       end
     end
 
     desc 'Show received packets'
     arg_name 'host'
     command :stats do |c|
-      c.action do |_golbal_options, _options, args|
-        exit_now!('NetTester is not running') unless Command.running?
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
+
+      c.action do |_golbal_options, options, args|
+        Phut.socket_dir = options[:socket_dir]
+        exit_now!('NetTester is not running') unless NetTester.running?
         help_now!('host is required') if args.empty?
         host = args.first
         exit_now! %(#{host}: no such host) unless Vhost.find_by(name: host)
@@ -141,7 +166,7 @@ module NetTester
         sent_desc = ''
         Vhost.all.each do |each|
           next if host == each.name
-          npacket = Command.packets_sent(host, each.name)
+          npacket = NetTester.packets_sent(host, each.name)
           sent_desc += "  #{host} -> #{each.name} = #{npacket} packet" if npacket > 0
         end
         puts "Packets sent:\n#{sent_desc}" unless sent_desc.empty?
@@ -149,7 +174,7 @@ module NetTester
         received_desc = ''
         Vhost.all.each do |each|
           next if host == each.name
-          npacket = Command.packets_received(host, each.name)
+          npacket = NetTester.packets_received(host, each.name)
           received_desc += "  #{each.name} -> #{host} = #{npacket} packet" if npacket > 0
         end
         puts "Packets received:\n#{received_desc}" unless received_desc.empty?
@@ -158,8 +183,12 @@ module NetTester
 
     desc 'Kills NetTester'
     command :kill do |c|
-      c.action do |_global_options, _options, _args|
-        Command.kill
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
+
+      c.action do |_global_options, options, _args|
+        Phut.socket_dir = options[:socket_dir]
+        NetTester.kill
       end
     end
 

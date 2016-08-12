@@ -31,8 +31,8 @@ Feature: "net_tester stats" コマンド
       | Source Host | Destination Host |
       |           1 |                2 |
       |           2 |                1 |
-    And コマンド `net_tester stats host1` の実行に成功
-    Then コマンド "net_tester stats host1" の出力は次のとおり:
+    And コマンド `net_tester stats host1 -S sockets` の実行に成功
+    Then コマンド "net_tester stats host1 -S sockets" の出力は次のとおり:
       """
       Packets sent:
         host1 -> host2 = 1 packet
@@ -41,21 +41,21 @@ Feature: "net_tester stats" コマンド
       """
 
   Scenario: パケットを送受信せずに "net_tester stats host1"
-    When コマンド `net_tester stats host1` の実行に成功
+    When コマンド `net_tester stats host1 -S sockets` の実行に成功
     Then コマンドの出力はなし
 
   Scenario: ホスト名を指定せず "net_tester stats"
-    When コマンド `net_tester stats` を実行
+    When コマンド `net_tester stats -S sockets` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "host is required" を含む
 
   Scenario: 不正なホスト名を指定
-    When コマンド `net_tester stats NO_SUCH_HOST` を実行
+    When コマンド `net_tester stats NO_SUCH_HOST -S sockets` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "NO_SUCH_HOST: no such host" を含む
 
   Scenario: NetTester が起動していない状態で "net_tester stats host1"
-    Given コマンド `net_tester kill` の実行に成功
-    When コマンド `net_tester stats host1` を実行
+    Given コマンド `net_tester kill -S sockets` の実行に成功
+    When コマンド `net_tester stats host1 -S sockets` を実行
     Then 終了ステータスは 0 ではない
     And コマンドの出力は "NetTester is not running" を含む

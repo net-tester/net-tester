@@ -7,8 +7,8 @@ end
 
 Given(/^NetTester でテストホスト (\d+) 台を起動$/) do |nhost|
   raise 'NetTester 物理スイッチが起動していない' unless @physical_test_switch_dpid
-  NetTester::Command.run @physical_test_switch_dpid
-  NetTester::Command.add_host nhost.to_i
+  NetTester.run @physical_test_switch_dpid
+  NetTester.add_host nhost.to_i
   sleep 1
 end
 
@@ -16,8 +16,8 @@ Given(/^NetTester と VLAN を有効にしたテストホスト (\d+) 台を起�
   vlan_option = + table.hashes.map do |each|
     "host#{each['Host']}:#{each['VLAN ID']}"
   end.join(',')
-  NetTester::Command.run @physical_test_switch_dpid, vlan_option
-  NetTester::Command.add_host nhost.to_i
+  NetTester.run @physical_test_switch_dpid, vlan_option
+  NetTester.add_host nhost.to_i
   sleep 1
 end
 
@@ -51,7 +51,7 @@ Given(/^NetTester 仮想スイッチと物理スイッチを次のように接�
   # FIXME: リンクは一本だけなので each しない
   table.hashes.each do |each|
     main_link = Phut::Link.create('ssw', 'psw')
-    NetTester::Command.connect_switch(device: main_link.device(:ssw), port_number: each['Virtual Port'].to_i)
+    NetTester.connect_switch(device: main_link.device(:ssw), port_number: each['Virtual Port'].to_i)
     @physical_test_switch.add_numbered_port(each['Physical Port'].to_i, main_link.device(:psw))
   end
 end
