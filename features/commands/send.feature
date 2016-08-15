@@ -7,20 +7,17 @@ Feature: "net_tester send" コマンド
   $ net_tester send --source host1 --dest host2
 
   Background:
-    Given テスト対象のネットワークにイーサネットスイッチが 1 台
+    Given テスト対象のイーサネットスイッチ
     And DPID が 0x123 の NetTester 物理スイッチ
-    And NetTester でテストホスト 2 台を起動
+    And テストホスト 2 台
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
       | Physical Port | Testee Port |
-      |             1 |           1 |
       |             2 |           2 |
-    And NetTester 仮想スイッチと物理スイッチを次のように接続:
-      | Virtual Port | Physical Port |
-      |            3 |             3 |
+      |             3 |           3 |
     And 次のパッチを追加:
       | Virtual Port | Physical Port |
-      |            1 |             1 |
       |            2 |             2 |
+      |            3 |             3 |
 
   Scenario: host1 の送受信パケット数を "net_tester stats host1" で表示
     When コマンド `net_tester send --source host1 --dest host2 -S sockets` を実行

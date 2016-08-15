@@ -20,7 +20,8 @@ end
 
 When(/^各テストホストから次のようにパケットを送信:$/) do |table|
   table.hashes.each do |each|
-    NetTester.send_packet("host#{each['Source Host']}", "host#{each['Destination Host']}")
+    NetTester.send_packet("host#{each['Source Host']}",
+                          "host#{each['Destination Host']}")
   end
   sleep 1
 end

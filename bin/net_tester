@@ -62,8 +62,8 @@ module NetTester
         exit_now!('NetTester is already running') if NetTester.running?
 
         NetTester.run options[:dpid].hex, options[:vlan]
+        NetTester.connect_switch(device: options[:device], port_number: 1)
         NetTester.add_host options[:nhost].to_i if options[:nhost]
-        NetTester.connect_switch(device: options[:device], port_number: options[:nhost].to_i + 1)
       end
     end
 
@@ -81,16 +81,16 @@ module NetTester
         exit_now!('NetTester is not running') unless NetTester.running?
         raise '--vport option is mandatory' if options[:vport].nil?
         raise '--port option is mandatory' if options[:port].nil?
-        if options[:vport].to_i > Vhost.all.size
+        if options[:vport].to_i > Vhost.all.size + 1
           exit_now!("#{options[:vport]}: no such virtual port")
         end
-        if options[:vport].to_i < 0
+        if options[:vport].to_i < 1
           exit_now!("#{options[:vport]}: invalid virtual port")
         end
-        if options[:port].to_i > Vhost.all.size
+        if options[:port].to_i > Vhost.all.size + 1
           exit_now!("#{options[:port]}: no such port")
         end
-        exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 0
+        exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 1
 
         NetTester.add options[:vport].to_i, options[:port].to_i
       end

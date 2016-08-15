@@ -26,21 +26,21 @@ module NetTester
 
     1.upto(nhost).each do |each|
       host_name = "host#{each}"
-      port_name = "port#{each}"
+      port_name = "port#{each + 1}"
       link = Phut::Link.create(host_name, port_name)
       Phut::Vhost.create(name: host_name,
                          ip_address: ip_address[each - 1],
                          mac_address: mac_address[each - 1],
                          device: link.device(host_name),
                          arp_entries: arp_entries)
-      @test_switch.add_numbered_port each, link.device(port_name)
+      @test_switch.add_numbered_port each + 1, link.device(port_name)
     end
   end
 
   # TODO: Raise if vport or port not found
   # TODO: Raise if NetTester is not running
   def self.add(vport, port)
-    mac_address = Phut::Vhost.find_by(name: "host#{vport}").mac_address
+    mac_address = Phut::Vhost.find_by(name: "host#{vport - 1}").mac_address
     Trema.trema_process('NetTesterController', Phut.socket_dir).controller
          .create_patch(source_port: vport,
                        source_mac_address: mac_address,
