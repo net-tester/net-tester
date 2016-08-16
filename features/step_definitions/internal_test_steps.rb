@@ -10,31 +10,6 @@ Given(/^VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nho
   sleep 1
 end
 
-Given(/^PacketIn を調べる OpenFlow スイッチ$/) do
-  @testee_switch = TesteeSwitch.create(dpid: 0x1, tcp_port: 6654)
-  step %(I successfully run `bundle exec trema run ../../fixtures/packet_in_logger.rb --port 6654 -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon`)
-end
-
-Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn が届く:$/) do |table|
-  table.hashes.each do |each|
-    if each['VLAN ID']
-      step %(the file "./log/PacketInLogger.log" should contain "PACKET_IN: Port = #{each['Port']}, VLAN ID = #{each['VLAN ID']}")
-    else
-      step %(the file "./log/PacketInLogger.log" should contain "PACKET_IN: Port = #{each['Port']}")
-    end
-  end
-end
-
-Then(/^テスト対象の OpenFlow スイッチの次のポートに PacketIn は届かない:$/) do |table|
-  table.hashes.each do |each|
-    cd('.') do
-      expect(IO.readlines('./log/PacketInLogger.log').any? do |line|
-               /PACKET_IN #{each['port']}/ =~ line
-             end).to be false
-    end
-  end
-end
-
 Then(/^OpenFlow コントローラが停止$/) do
   step 'the file "tmp/pids/NetTesterController.pid" should not exist'
 end

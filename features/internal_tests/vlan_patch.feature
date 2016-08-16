@@ -1,4 +1,3 @@
-@wip
 Feature: パッチに VLAN タグを指定
   Background:
     Given PacketIn を調べる OpenFlow スイッチ

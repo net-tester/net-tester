@@ -1,9 +1,11 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-Given(/^NetTester をオプション "([^"]*)" で起動$/) do |options|
-  command = "./bin/net_tester run #{options}"
-  system command || railse("#{command} failed")
+Given(/^NetTester を起動$/) do
+  NetTester.run @physical_test_switch.dpid
+  main_link = Phut::Link.create('ssw', 'psw')
+  NetTester.connect_switch(device: main_link.device(:ssw), port_number: 1)
+  @physical_test_switch.add_numbered_port(1, main_link.device(:psw))
 end
 
 When(/^次のパッチを追加:$/) do |table|

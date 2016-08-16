@@ -13,6 +13,7 @@ Feature: "net_tester stats" コマンド
   Background:
     Given テスト対象のイーサネットスイッチ
     And DPID が 0x123 の NetTester 物理スイッチ
+    And NetTester を起動
     And テストホスト 2 台
     And NetTester 物理スイッチとテスト対象のスイッチを次のように接続:
       | Physical Port | Testee Port |
