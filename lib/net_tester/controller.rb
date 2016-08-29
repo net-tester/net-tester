@@ -17,14 +17,18 @@ class NetTesterController < Trema::Controller
       raise "Invalid argument: #{args.inspect}" unless /host(\d+):(\d+)/=~ each
       hash[Regexp.last_match(1).to_i] = Regexp.last_match(2).to_i
     end
-    logger.info "#{name} started"
+    logger.info "#{name} started (Physical switch dpid = #{@physical_switch_dpid.to_hex})"
   end
 
   def switch_ready(dpid)
     logger.info "Switch #{dpid.to_hex} connected"
+    @physical_switch_started = true if dpid == @physical_switch_dpid
   end
 
   def create_patch(source_port:, source_mac_address:, destination_port:)
+    unless @physical_switch_started
+      raise "Physical switch #{@physical_switch_dpid.to_hex} is not yet connected to #{self.class}"
+    end
     Patch.create(physical_switch_dpid: @physical_switch_dpid,
                  vlan_id: @vlan_id[source_port],
                  source_port: source_port,
