@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'faker'
+require 'net_tester/netns'
 require 'net_tester/test_switch'
 require 'phut'
 require 'phut/shell_runner'
