@@ -15,8 +15,25 @@ module NetTester
     @test_switch = TestSwitch.create(dpid: 0xdad1c001)
   end
 
-  def self.connect_switch(device:, port_number:)
+  def self.connect_device_to_virtual_port(device:, port_number:)
     @test_switch.add_numbered_port port_number, device
+  end
+
+  def self.controller
+    Trema.trema_process('NetTesterController', Phut.socket_dir).controller
+  end
+
+  def self.patch_netns_to_physical_port(netns:,
+                                        physical_port_number:,
+                                        virtual_port_number:)
+    virtual_port_name = "port#{virtual_port_number}"
+    link = Phut::Link.create(netns.name, virtual_port_name)
+    connect_device_to_virtual_port(device: link.device(virtual_port_name),
+                                   port_number: virtual_port_number)
+    controller.create_patch(source_port: virtual_port_number,
+                            source_mac_address: netns.mac_address,
+                            destination_port: physical_port_number)
+    netns.device = link.device(netns.name)
   end
 
   def self.add_host(nhost)
@@ -41,10 +58,9 @@ module NetTester
   # TODO: Raise if NetTester is not running
   def self.add(vport, port)
     mac_address = Phut::Vhost.find_by(name: "host#{vport - 1}").mac_address
-    Trema.trema_process('NetTesterController', Phut.socket_dir).controller
-         .create_patch(source_port: vport,
-                       source_mac_address: mac_address,
-                       destination_port: port)
+    controller.create_patch(source_port: vport,
+                            source_mac_address: mac_address,
+                            destination_port: port)
   end
 
   # rubocop:disable ParameterLists
@@ -62,15 +78,8 @@ module NetTester
   end
   # rubocop:enable ParameterLists
 
-  def self.create_patch(source_port:, source_mac_address:, destination_port:)
-    Trema.trema_process('NetTesterController', Phut.socket_dir).controller
-         .create_patch(source_port: source_port,
-                       source_mac_address: source_mac_address,
-                       destination_port: destination_port)
-  end
-
   def self.list
-    Trema.trema_process('NetTesterController', Phut.socket_dir).controller.list_patches
+    controller.list_patches
   end
 
   # TODO: Raise if source_name or dest_name not found

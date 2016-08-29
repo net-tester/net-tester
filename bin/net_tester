@@ -62,7 +62,8 @@ module NetTester
         exit_now!('NetTester is already running') if NetTester.running?
 
         NetTester.run options[:dpid].hex, options[:vlan]
-        NetTester.connect_switch(device: options[:device], port_number: 1)
+        NetTester.connect_device_to_virtual_port(device: options[:device],
+                                                 port_number: 1)
         NetTester.add_host options[:nhost].to_i if options[:nhost]
       end
     end
