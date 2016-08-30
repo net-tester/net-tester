@@ -2,10 +2,9 @@
 # frozen_string_literal: true
 
 Given(/^NetTester を起動$/) do
-  NetTester.run @physical_test_switch.dpid
   main_link = Phut::Link.create('ssw', 'psw')
-  NetTester.connect_device_to_virtual_port(device: main_link.device(:ssw),
-                                           port_number: 1)
+  NetTester.run(network_device: main_link.device(:ssw),
+                physical_switch_dpid: @physical_test_switch.dpid)
   @physical_test_switch.add_numbered_port(1, main_link.device(:psw))
 end
 

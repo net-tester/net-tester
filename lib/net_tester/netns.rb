@@ -6,8 +6,6 @@ require 'phut/netns'
 module NetTester
   # Phut::Netns wrapper class
   class Netns
-    delegate :exec, to: :@netns
-
     # rubocop:disable ParameterLists
     def initialize(name:,
                    mac_address:,
@@ -25,6 +23,10 @@ module NetTester
                                    physical_port_number: physical_port_number)
     end
     # rubocop:enable ParameterLists
+
+    def method_missing(method, *args, &block)
+      @netns.__send__ method, *args, &block
+    end
 
     private
 
