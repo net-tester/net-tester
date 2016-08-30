@@ -11,6 +11,21 @@ require 'trema'
 module NetTester
   extend Phut::ShellRunner
 
+  def self.log_dir=(dir)
+    FileUtils.mkdir_p(dir) unless File.exist?(dir)
+    Phut.log_dir = dir
+  end
+
+  def self.pid_dir=(dir)
+    FileUtils.mkdir_p(dir) unless File.exist?(dir)
+    Phut.pid_dir = dir
+  end
+
+  def self.socket_dir=(dir)
+    FileUtils.mkdir_p(dir) unless File.exist?(dir)
+    Phut.socket_dir = dir
+  end
+
   def self.run(network_device:, physical_switch_dpid:, vlan: '')
     controller_file = File.expand_path File.join(__dir__, 'net_tester/controller.rb')
     sh "bundle exec trema run #{controller_file} -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon -- #{physical_switch_dpid} #{vlan}"
