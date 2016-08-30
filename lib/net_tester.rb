@@ -24,19 +24,6 @@ module NetTester
     Trema.trema_process('NetTesterController', Phut.socket_dir).controller
   end
 
-  def self.patch_netns_to_physical_port(netns:,
-                                        physical_port_number:,
-                                        virtual_port_number:)
-    virtual_port_name = "port#{virtual_port_number}"
-    link = Phut::Link.create(netns.name, virtual_port_name)
-    connect_device_to_virtual_port(device: link.device(virtual_port_name),
-                                   port_number: virtual_port_number)
-    controller.create_patch(source_port: virtual_port_number,
-                            source_mac_address: netns.mac_address,
-                            destination_port: physical_port_number)
-    netns.device = link.device(netns.name)
-  end
-
   def self.add_host(nhost)
     ip_address = Array.new(nhost) { Faker::Internet.ip_v4_address }
     mac_address = Array.new(nhost) { Faker::Internet.mac_address }
@@ -63,21 +50,6 @@ module NetTester
                             source_mac_address: mac_address,
                             destination_port: port)
   end
-
-  # rubocop:disable ParameterLists
-  def self.add_netns(port_number:, name:, ip_address:, mac_address:, netmask:, route:)
-    port_name = "port#{port_number}"
-    link = Phut::Link.create(name, port_name)
-    netns = Phut::Netns.create(name: name,
-                               ip_address: ip_address,
-                               mac_address: mac_address,
-                               netmask: netmask,
-                               route: route)
-    @test_switch.add_numbered_port port_number, link.device(port_name)
-    netns.device = link.device(name)
-    netns
-  end
-  # rubocop:enable ParameterLists
 
   def self.list
     controller.list_patches
