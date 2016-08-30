@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'faker'
 require 'net_tester/netns'
 require 'net_tester/test_switch'
@@ -81,16 +82,22 @@ module NetTester
     false
   end
 
+  # TODO: Remove rescue
   def self.kill
+    Phut.log_dir = './log'
+    Phut.pid_dir = './pids'
+    Phut.socket_dir = './sockets'
+
     TestSwitch.destroy_all
+    Phut::Netns.destroy_all
     Phut::Vhost.destroy_all
     Phut::Link.destroy_all
-    # TODO: Remove rescue
+  rescue
+    true
+  ensure
     begin
       Trema.trema_process('NetTesterController', Phut.socket_dir).killall
     rescue DRb::DRbConnError
-      true
-    rescue
       true
     end
   end
