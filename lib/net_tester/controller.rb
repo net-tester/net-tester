@@ -23,6 +23,11 @@ class NetTesterController < Trema::Controller
   def switch_ready(dpid)
     logger.info "Switch #{dpid.to_hex} connected"
     @physical_switch_started = true if dpid == @physical_switch_dpid
+    # TODO: maybe need more precise broadcasting control?
+    return unless dpid != 0xdad1001
+    send_flow_mod_add(0xdad1c001,
+                      match: Match.new(destination_mac_address: 'ff:ff:ff:ff:ff:ff'),
+                      actions: SendOutPort.new(:flood))
   end
 
   def create_patch(source_port:, source_mac_address:, destination_port:)
