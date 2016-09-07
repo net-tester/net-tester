@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/trema/phut.git
-  revision: d4b5730058e7dcb9b139c5e7f0bc9df726617ce7
+  revision: f43a8c4e94eeb18c83e1535e81adbc860df12b75
   branch: develop
   specs:
     phut (0.7.7)
@@ -11,7 +11,7 @@ GIT
 
 GIT
   remote: git://github.com/trema/trema.git
-  revision: 265dc3762cdc1dc73c3f00a27fc8a04197f5f028
+  revision: 8d8858dff055e33efc68c3038119924a810c02c4
   branch: develop
   specs:
     trema (0.10.1)
@@ -265,4 +265,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
