@@ -2,7 +2,7 @@
 
 NetTesterは物理ネットワークのための受け入れテストツールです。物理ネットワークに仮想的なホストをつなぎ込み、ping疎通などのテストをソフトウェアで自動実行できます。仮想ホストの生成と物理ネットワークへのつなぎ込みをすべてソフトウェア的に行うため、人手では時間のかかる網羅的なテストもスクリプトによって自動的に実行できます。
 
-![overview](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/overview.png)
+![overview](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/overview.png)
 
 NetTesterでのテストはテストスクリプトに沿って実行します。テストスクリプトには次の要素を記述できます:
 
@@ -15,7 +15,7 @@ NetTesterテストスクリプトを実行すると、仮想ホストが物理�
 
 NetTesterの最小構成は、LinuxマシンとOpenFlow物理スイッチのみです。
 
-![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/network.png)
+![network](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/network.png)
 
 Linuxマシンはパケットを送受信する仮想ホストとソフトウェアOpenFlowスイッチを起動します。OpenFlow物理スイッチは仮想OpenFlowスイッチとの間に仮想パッチを作ることで、仮想ホストを物理ネットワークに仮想的に接続します。このように、Linuxマシン一台と物理OpenFlowスイッチを用意すれば、NetTesterを使ってさまざまなパターンのテストを自動的に実行できます。
 
@@ -27,7 +27,7 @@ Linuxマシンはパケットを送受信する仮想ホストとソフトウェ
 * [Open vSwitch](https://openvswitch.org/) (`apt-get install openvswitch-switch`).
 
 ``` shellsession
-$ git clone https://github.com/yasuhito/net_tester.git
+$ git clone https://github.com/net-tester/net-tester.git
 $ cd net_tester
 $ bundle install
 ```
@@ -46,7 +46,7 @@ $ ./bin/net_tester run --nhost 3 --vlan host1:100,host3:200 --device eth1 --dpid
 * --device: 仮想スイッチが使うデバイス名
 * --dpid: 物理スイッチの DPID
 
-![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/run_example.png)
+![network](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/run_example.png)
 
 ## net_tester add [オプション]
 パッチを追加する
@@ -58,7 +58,7 @@ $ ./bin/net_tester add --vport 2 --port 1
 * --vport: 仮想スイッチのポート番号
 * --port: 物理スイッチのポート番号
 
-![network](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/add_example.png)
+![network](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/add_example.png)
 
 ## net_tester delete [オプション]
 パッチを削除する
@@ -98,7 +98,7 @@ NetTester を停止する
 
 ## テスト構成例
 
-![test_scenario](https://raw.githubusercontent.com/yasuhito/net_tester/develop/img/test_scenario.png)
+![test_scenario](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/test_scenario.png)
 
 ## Cucumber シナリオ
 
