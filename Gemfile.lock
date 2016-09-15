@@ -10,6 +10,16 @@ GIT
       pry (~> 0.10.3)
 
 GIT
+  remote: git://github.com/trema/pio.git
+  revision: bfd61c2625e0b4d26b5aca0abda714401eac9f86
+  branch: develop
+  specs:
+    pio (0.30.0)
+      activesupport (~> 4.2, >= 4.2.4)
+      bindata (~> 2.1.0)
+      bundler (>= 1.11.2, < 2.0)
+
+GIT
   remote: git://github.com/trema/trema.git
   revision: 8d8858dff055e33efc68c3038119924a810c02c4
   branch: develop
@@ -144,9 +154,6 @@ GEM
       pkg-config (~> 1.1.7)
     parser (2.3.1.2)
       ast (~> 2.2)
-    pio (0.30.0)
-      activesupport (~> 4.2, >= 4.2.4)
-      bindata (~> 2.1.0)
     pkg-config (1.1.7)
     powerpack (0.1.1)
     pry (0.10.4)
@@ -253,6 +260,7 @@ DEPENDENCIES
   factory_girl
   net_tester!
   phut!
+  pio!
   rails (= 4.2.6)
   rspec-expectations
   rspec-given
