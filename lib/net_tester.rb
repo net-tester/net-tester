@@ -30,11 +30,13 @@ module NetTester
     controller_file = File.expand_path File.join(__dir__, 'net_tester/controller.rb')
     sh "bundle exec trema run #{controller_file} -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon -- #{physical_switch_dpid} #{vlan}"
     @test_switch = TestSwitch.create(dpid: 0xdad1c001)
-
     connect_device_to_virtual_port(device: network_device, port_number: 1)
   end
 
-  def self.connect_device_to_virtual_port(device:, port_number:)
+  def self.connect_device_to_virtual_port(device:, port_number:, host_name:'')
+    if host_name
+      controller.set_host_name_of_port_number(host_name, port_number)
+    end
     @test_switch.add_numbered_port port_number, device
   end
 
@@ -56,7 +58,9 @@ module NetTester
                          mac_address: mac_address[each - 1],
                          device: link.device(host_name),
                          arp_entries: arp_entries)
-      @test_switch.add_numbered_port each + 1, link.device(port_name)
+      connect_device_to_virtual_port(host_name: host_name,
+                                     device: link.device(port_name),
+                                     port_number: each + 1)
     end
   end
 
