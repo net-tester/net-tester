@@ -5,9 +5,20 @@ Given(/^VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nho
   vlan_option = + table.hashes.map do |each|
     "host#{each['Host']}:#{each['VLAN ID']}"
   end.join(',')
-  NetTester.run @physical_test_switch_dpid, vlan_option
+  main_link = Phut::Link.create('ssw', 'psw')
+  NetTester.run(network_device: main_link.device(:ssw),
+                physical_switch_dpid: @physical_test_switch.dpid,
+                vlan: vlan_option)
+  @physical_test_switch.add_numbered_port(1, main_link.device(:psw))
   NetTester.add_host nhost.to_i
   sleep 1
+end
+
+Then(/^各テストホストは以下の数パケットを受信する:$/) do |table|
+  table.hashes.each do |each|
+    packets_received = NetTester.packets_received("host#{each['Destination Host']}", "host#{each['Source Host']}")
+    expect(packets_received).to be each['Received Packets'].to_i
+  end
 end
 
 Then(/^OpenFlow コントローラが停止$/) do
