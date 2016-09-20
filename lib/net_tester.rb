@@ -11,14 +11,26 @@ require 'trema'
 module NetTester
   extend Phut::ShellRunner
 
+  def self.log_dir
+    Phut.log_dir
+  end
+
   def self.log_dir=(dir)
     FileUtils.mkdir_p(dir) unless File.exist?(dir)
     Phut.log_dir = dir
   end
 
+  def self.pid_dir
+    Phut.pid_dir
+  end
+
   def self.pid_dir=(dir)
     FileUtils.mkdir_p(dir) unless File.exist?(dir)
     Phut.pid_dir = dir
+  end
+
+  def self.socket_dir
+    Phut.socket_dir
   end
 
   def self.socket_dir=(dir)
@@ -28,7 +40,7 @@ module NetTester
 
   def self.run(network_device:, physical_switch_dpid:, vlan: '')
     controller_file = File.expand_path File.join(__dir__, 'net_tester/controller.rb')
-    sh "bundle exec trema run #{controller_file} -L #{Phut.log_dir} -P #{Phut.pid_dir} -S #{Phut.socket_dir} --daemon -- #{physical_switch_dpid} #{vlan}"
+    sh "bundle exec trema -v run #{controller_file} -L #{NetTester.log_dir} -P #{NetTester.pid_dir} -S #{NetTester.socket_dir} --daemon -- #{physical_switch_dpid} #{vlan}"
     @test_switch = TestSwitch.create(dpid: 0xdad1c001)
 
     connect_device_to_virtual_port(device: network_device, port_number: 1)
@@ -39,7 +51,7 @@ module NetTester
   end
 
   def self.controller
-    Trema.trema_process('NetTesterController', Phut.socket_dir).controller
+    Trema.trema_process('NetTesterController', NetTester.socket_dir).controller
   end
 
   def self.add_host(nhost)
@@ -94,7 +106,7 @@ module NetTester
   end
 
   def self.running?
-    Trema.trema_process('NetTesterController', Phut.socket_dir).controller
+    Trema.trema_process('NetTesterController', NetTester.socket_dir).controller
   rescue
     false
   end
@@ -109,7 +121,7 @@ module NetTester
     true
   ensure
     begin
-      Trema.trema_process('NetTesterController', Phut.socket_dir).killall
+      Trema.trema_process('NetTesterController', NetTester.socket_dir).killall
     rescue DRb::DRbConnError
       true
     rescue

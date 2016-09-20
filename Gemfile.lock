@@ -11,7 +11,7 @@ GIT
 
 GIT
   remote: git://github.com/trema/pio.git
-  revision: bfd61c2625e0b4d26b5aca0abda714401eac9f86
+  revision: e29c289d9abfdeeb64eeb6ea0223b2a96252719e
   branch: develop
   specs:
     pio (0.30.0)
@@ -21,7 +21,7 @@ GIT
 
 GIT
   remote: git://github.com/trema/trema.git
-  revision: 8d8858dff055e33efc68c3038119924a810c02c4
+  revision: 03482228e72843bd59b6aa15e25b8ecc35c2e4f4
   branch: develop
   specs:
     trema (0.10.1)
