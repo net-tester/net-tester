@@ -5,10 +5,12 @@ module NetTester
                     vlan_id:, source_port:, source_mac_address:, destination_port:)
       if vlan_id
         VlanHostToPatchFlow.create(in_port: source_port, vlan_id: vlan_id)
+        PatchToVlanHostFlow.create(destination_mac_address: source_mac_address, out_port: source_port, vlan_id: vlan_id)
+        PatchToVlanHostBroadcastFlow.create(vlan_id: vlan_id)
       else
         HostToPatchFlow.create(in_port: source_port)
+        PatchToHostFlow.create(destination_mac_address: source_mac_address, out_port: source_port)
       end
-      PatchToHostFlow.create(destination_mac_address: source_mac_address, out_port: source_port)
       PatchToNetworkFlow.create(source_mac_address: source_mac_address, out_port: destination_port,
                                 physical_switch_dpid: physical_switch_dpid)
       NetworkToPatchFlow.create(in_port: destination_port,
@@ -16,7 +18,12 @@ module NetTester
     end
 
     def self.destroy(physical_switch_dpid:,
-                     source_port:, source_mac_address:, destination_port:)
+                     vlan_id:, source_port:, source_mac_address:, destination_port:)
+      if vlan_id
+        VlanHostToPatchFlow.destroy(in_port: source_port, vlan_id: vlan_id)
+        PatchToVlanHostFlow.destroy(out_port: source_port, vlan_id: vlan_id)
+        PatchToVlanHostBroadcastFlow.destroy(vlan_id: vlan_id)
+      end
       HostToPatchFlow.destroy(in_port: source_port)
       PatchToHostFlow.destroy(destination_mac_address: source_mac_address, out_port: source_port)
       PatchToNetworkFlow.destroy(source_mac_address: source_mac_address, out_port: destination_port,
