@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Control vlan-tagged unicast flow from patch(OVS) to tester-host.
 class PatchToVlanHostFlow < ActiveFlow::Base
   def self.create(destination_mac_address:, out_port:, vlan_id:)
     send_flow_mod_add(0xdad1c001,

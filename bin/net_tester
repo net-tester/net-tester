@@ -68,7 +68,7 @@ module NetTester
       end
     end
 
-    desc 'Add a patch'
+    desc 'Add a vport-to-port patch'
     command :add do |c|
       c.desc 'port number of virtual switch'
       c.flag [:vport]
@@ -94,6 +94,25 @@ module NetTester
         exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 1
 
         NetTester.add options[:vport].to_i, options[:port].to_i
+      end
+    end
+
+    desc 'Add a port-to-port direct patch'
+    command :add_p2p do |c|
+      c.desc 'a couple of port numbers of physical switch'
+      c.flag [:ports]
+      c.desc 'Location to find socket files'
+      c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
+
+      c.action do |_global_options, options, _args|
+        Phut.socket_dir = options[:socket_dir]
+        exit_now!('NetTester is not running') unless NetTester.running?
+        raise '--ports option is mandatory' if options[:ports].nil?
+        ports = options[:ports].split(',').uniq
+        if ports.length != 2 || ports[0].to_i < 1 || ports[1].to_i < 1
+          exit_now!("#{options[:ports]}: invalid port pair")
+        end
+        NetTester.add_p2p ports[0].to_i, ports[1].to_i
       end
     end
 
