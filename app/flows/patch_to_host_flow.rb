@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Control flows from patch(OVS) to tester-host.
 class PatchToHostFlow < ActiveFlow::Base
   def self.create(destination_mac_address:, out_port:)
     send_flow_mod_add(0xdad1c001,

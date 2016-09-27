@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Control vlan-tagged broadcast flow from patch(OVS) to tester-host.
 class PatchToVlanHostBroadcastFlow < ActiveFlow::Base
   def self.create(vlan_id:)
     send_flow_mod_add(0xdad1c001,

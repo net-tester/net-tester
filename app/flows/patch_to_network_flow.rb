@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Control flows from patch(physical-switch) to testee-device.
 class PatchToNetworkFlow < ActiveFlow::Base
   def self.create(physical_switch_dpid:, source_mac_address:, out_port:)
     send_flow_mod_add(physical_switch_dpid,

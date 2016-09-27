@@ -45,10 +45,8 @@ module NetTester
     connect_device_to_virtual_port(device: network_device, port_number: 1)
   end
 
-  def self.connect_device_to_virtual_port(device:, port_number:, host_name:'')
-    if host_name
-      controller.set_host_name_of_port_number(host_name, port_number)
-    end
+  def self.connect_device_to_virtual_port(device:, port_number:, host_name: '')
+    host_name && controller.set_host_name_of_port_number(host_name, port_number)
     @test_switch.add_numbered_port port_number, device
   end
 
@@ -66,10 +64,8 @@ module NetTester
       port_name = "port#{each + 1}"
       link = Phut::Link.create(host_name, port_name)
       Phut::Vhost.create(name: host_name,
-                         ip_address: ip_address[each - 1],
-                         mac_address: mac_address[each - 1],
-                         device: link.device(host_name),
-                         arp_entries: arp_entries)
+                         ip_address: ip_address[each - 1], mac_address: mac_address[each - 1],
+                         device: link.device(host_name), arp_entries: arp_entries)
       connect_device_to_virtual_port(host_name: host_name,
                                      device: link.device(port_name),
                                      port_number: each + 1)
@@ -83,6 +79,10 @@ module NetTester
     controller.create_patch(source_port: vport,
                             source_mac_address: mac_address,
                             destination_port: port)
+  end
+
+  def self.add_p2p(port_a, port_b)
+    controller.create_p2p_patch(source_port: port_a, destination_port: port_b)
   end
 
   def self.list

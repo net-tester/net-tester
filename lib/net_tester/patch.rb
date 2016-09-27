@@ -1,8 +1,20 @@
 # frozen_string_literal: true
 module NetTester
   class Patch
+    # port-to-port patch list, [[port1,port2],[port3,port4],...]
+    @p2p_patch_list = []
+
+    def self.raise_by_overlapped_patch(port_id_list)
+      port_id_list.each do |port_id|
+        if @p2p_patch_list.any? { |patch| patch.include?(port_id) }
+          raise "Port #{port_id} is already in use by other patch"
+        end
+      end
+    end
+
     def self.create(physical_switch_dpid:,
                     vlan_id:, source_port:, source_mac_address:, destination_port:)
+      raise_by_overlapped_patch [source_port, destination_port]
       if vlan_id
         VlanHostToPatchFlow.create(in_port: source_port, vlan_id: vlan_id)
         PatchToVlanHostFlow.create(destination_mac_address: source_mac_address, out_port: source_port, vlan_id: vlan_id)
@@ -15,6 +27,17 @@ module NetTester
                                 physical_switch_dpid: physical_switch_dpid)
       NetworkToPatchFlow.create(in_port: destination_port,
                                 physical_switch_dpid: physical_switch_dpid)
+    end
+
+    def self.create_p2p(physical_switch_dpid:, source_port:, destination_port:)
+      raise_by_overlapped_patch [source_port, destination_port]
+      NetworkToNetworkPatchFlow.create(physical_switch_dpid: physical_switch_dpid,
+                                       source_port: source_port,
+                                       destination_port: destination_port)
+      NetworkToNetworkPatchFlow.create(physical_switch_dpid: physical_switch_dpid,
+                                       source_port: destination_port,
+                                       destination_port: source_port)
+      @p2p_patch_list.append [source_port, destination_port]
     end
 
     def self.destroy(physical_switch_dpid:,
@@ -30,6 +53,7 @@ module NetTester
                                  physical_switch_dpid: physical_switch_dpid)
       NetworkToPatchFlow.destroy(in_port: destination_port,
                                  physical_switch_dpid: physical_switch_dpid)
+      @p2p_patch_list.clear
     end
 
     def self.all
