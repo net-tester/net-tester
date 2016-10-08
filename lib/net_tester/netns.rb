@@ -13,14 +13,17 @@ module NetTester
                    netmask:,
                    gateway:,
                    virtual_port_number:,
-                   physical_port_number:)
+                   physical_port_number:,
+                   vlan_id:)
       @netns = Phut::Netns.create(name: name,
                                   mac_address: mac_address,
                                   ip_address: ip_address,
                                   netmask: netmask,
                                   route: { net: '0.0.0.0', gateway: gateway })
-      patch_netns_to_physical_port(virtual_port_number: virtual_port_number,
-                                   physical_port_number: physical_port_number)
+      @virtual_port_number = virtual_port_number
+      @physical_port_number = physical_port_number
+      @vlan_id = vlan_id
+      patch_netns_to_physical_port
     end
     # rubocop:enable ParameterLists
 
@@ -30,15 +33,15 @@ module NetTester
 
     private
 
-    def patch_netns_to_physical_port(virtual_port_number:,
-                                     physical_port_number:)
-      virtual_port_name = "port#{virtual_port_number}"
+    def patch_netns_to_physical_port
+      virtual_port_name = "port#{@virtual_port_number}"
       link = Phut::Link.create(@netns.name, virtual_port_name)
       NetTester.connect_device_to_virtual_port(device: link.device(virtual_port_name),
-                                               port_number: virtual_port_number)
-      NetTester.controller.create_patch(source_port: virtual_port_number,
+                                               port_number: @virtual_port_number)
+      NetTester.controller.create_patch(source_port: @virtual_port_number,
                                         source_mac_address: @netns.mac_address,
-                                        destination_port: physical_port_number)
+                                        destination_port: @physical_port_number,
+                                        vlan_id: @vlan_id)
       @netns.device = link.device(@netns.name)
     end
   end

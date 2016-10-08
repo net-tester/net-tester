@@ -38,15 +38,14 @@ module NetTester
     Phut.socket_dir = dir
   end
 
-  def self.run(network_device:, physical_switch_dpid:, vlan: '')
+  def self.run(network_device:, physical_switch_dpid:)
     controller_file = File.expand_path File.join(__dir__, 'net_tester/controller.rb')
-    sh "bundle exec trema -v run #{controller_file} -L #{NetTester.log_dir} -P #{NetTester.pid_dir} -S #{NetTester.socket_dir} --daemon -- #{physical_switch_dpid} #{vlan}"
+    sh "bundle exec trema -v run #{controller_file} -L #{NetTester.log_dir} -P #{NetTester.pid_dir} -S #{NetTester.socket_dir} --daemon -- #{physical_switch_dpid}"
     @test_switch = TestSwitch.create(dpid: 0xdad1c001)
     connect_device_to_virtual_port(device: network_device, port_number: 1)
   end
 
-  def self.connect_device_to_virtual_port(device:, port_number:, host_name: '')
-    host_name && controller.set_host_name_of_port_number(host_name, port_number)
+  def self.connect_device_to_virtual_port(device:, port_number:)
     @test_switch.add_numbered_port port_number, device
   end
 
@@ -66,19 +65,20 @@ module NetTester
       Phut::Vhost.create(name: host_name,
                          ip_address: ip_address[each - 1], mac_address: mac_address[each - 1],
                          device: link.device(host_name), arp_entries: arp_entries)
-      connect_device_to_virtual_port(host_name: host_name,
-                                     device: link.device(port_name),
+      connect_device_to_virtual_port(device: link.device(port_name),
                                      port_number: each + 1)
     end
   end
 
   # TODO: Raise if vport or port not found
   # TODO: Raise if NetTester is not running
-  def self.add(vport, port)
+  def self.add(vport, port, vlan_id = nil)
     mac_address = Phut::Vhost.find_by(name: "host#{vport - 1}").mac_address
+    vlan_id = vlan_id.nil? ? nil : vlan_id.to_i
     controller.create_patch(source_port: vport,
                             source_mac_address: mac_address,
-                            destination_port: port)
+                            destination_port: port,
+                            vlan_id: vlan_id)
   end
 
   def self.add_p2p(port_a, port_b)

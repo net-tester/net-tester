@@ -1,14 +1,10 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-Given(/^VLAN を有効にしたテストホスト (\d+) 台を起動:$/) do |nhost, table|
-  vlan_option = + table.hashes.map do |each|
-    "host#{each['Host']}:#{each['VLAN ID']}"
-  end.join(',')
+Given(/^テストホスト (\d+) 台を起動$/) do |nhost|
   main_link = Phut::Link.create('ssw', 'psw')
   NetTester.run(network_device: main_link.device(:ssw),
-                physical_switch_dpid: @physical_test_switch.dpid,
-                vlan: vlan_option)
+                physical_switch_dpid: @physical_test_switch.dpid)
   @physical_test_switch.add_numbered_port(1, main_link.device(:psw))
   NetTester.add_host nhost.to_i
   sleep 1

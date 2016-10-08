@@ -38,11 +38,10 @@ $ bundle install
 NetTester を起動する
 
 ```shellsession
-$ ./bin/net_tester run --nhost 3 --vlan host1:100,host3:200 --device eth1 --dpid 0x123
+$ ./bin/net_tester run --nhost 3 --device eth1 --dpid 0x123
 ```
 
 * --nhost: 起動する仮想ホストの台数
-* --vlan: 仮想ホストからのパケットに付ける VLAN ID
 * --device: 仮想スイッチが使うデバイス名
 * --dpid: 物理スイッチの DPID
 
@@ -52,11 +51,12 @@ $ ./bin/net_tester run --nhost 3 --vlan host1:100,host3:200 --device eth1 --dpid
 パッチを追加する
 
 ```shellsession
-$ ./bin/net_tester add --vport 2 --port 1
+$ ./bin/net_tester add --vport 2 --port 1 --vlan 100
 ```
 
 * --vport: 仮想スイッチのポート番号
 * --port: 物理スイッチのポート番号
+* --vlan: 物理スイッチのポートからパケットに付く VLAN ID
 
 ![network](https://raw.githubusercontent.com/net-tester/net-tester/develop/img/add_example.png)
 

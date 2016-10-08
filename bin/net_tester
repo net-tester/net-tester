@@ -37,8 +37,6 @@ module NetTester
     command :run do |c|
       c.desc 'number of virtual hosts'
       c.flag [:n, :nhost]
-      c.desc 'VLAN ID set to each host'
-      c.flag [:vlan]
       c.desc 'device name that virtual hosts use'
       c.flag [:d, :device]
       c.desc 'dpid that physical switch uses'
@@ -62,8 +60,7 @@ module NetTester
         exit_now!('NetTester is already running') if NetTester.running?
 
         NetTester.run(network_device: options[:device],
-                      physical_switch_dpid: options[:dpid].hex,
-                      vlan: options[:vlan])
+                      physical_switch_dpid: options[:dpid].hex)
         NetTester.add_host options[:nhost].to_i if options[:nhost]
       end
     end
@@ -74,6 +71,8 @@ module NetTester
       c.flag [:vport]
       c.desc 'port number of physical switch'
       c.flag [:port]
+      c.desc 'VLAN ID set to the port'
+      c.flag [:vlan]
       c.desc 'Location to find socket files'
       c.flag [:S, :socket_dir], default_value: Trema::DEFAULT_SOCKET_DIR
 
@@ -92,8 +91,14 @@ module NetTester
           exit_now!("#{options[:port]}: no such port")
         end
         exit_now!("#{options[:port]}: invalid port") if options[:port].to_i < 1
-
-        NetTester.add options[:vport].to_i, options[:port].to_i
+        if options[:vlan] && options[:vlan].to_i > 4095
+          exit_now!("#{options[:vlan]}: invalid vlan id")
+        end
+        if options[:vlan] && options[:vlan].to_i < 1
+          exit_now!("#{options[:vlan]}: invalid vlan id")
+        end
+ 
+        NetTester.add options[:vport].to_i, options[:port].to_i, options[:vlan]
       end
     end
 

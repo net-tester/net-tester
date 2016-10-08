@@ -10,13 +10,13 @@ end
 
 When(/^次のパッチを追加:$/) do |table|
   table.hashes.each do |each|
-    NetTester.add(each['Virtual Port'].to_i, each['Physical Port'].to_i)
+    NetTester.add(each['Virtual Port'].to_i, each['Physical Port'].to_i, each['VLAN ID'])
   end
 end
 
 When(/^次のパッチを削除:$/) do |table|
   table.hashes.each do |each|
-    NetTester.delete(each['Virtual Port'].to_i, each['Physical Port'].to_i)
+    NetTester.delete(each['Virtual Port'].to_i, each['Physical Port'].to_i, each['VLAN ID'])
   end
 end
 
