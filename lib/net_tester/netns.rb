@@ -14,7 +14,7 @@ module NetTester
                    gateway:,
                    virtual_port_number:,
                    physical_port_number:,
-                   vlan_id:)
+                   vlan_id: nil)
       @netns = Phut::Netns.create(name: name,
                                   mac_address: mac_address,
                                   ip_address: ip_address,
