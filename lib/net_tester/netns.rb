@@ -43,6 +43,7 @@ module NetTester
                                         destination_port: @physical_port_number,
                                         vlan_id: @vlan_id)
       @netns.device = link.device(@netns.name)
+      @netns.exec("ethtool -K #{@netns.device} tx off")
     end
   end
 end
