@@ -35,7 +35,6 @@ PATH
     net_tester (0.2.0)
       faker (~> 1.6, >= 1.6)
       gli (~> 2.16.0)
-      phut (~> 0.7.7)
       pio (~> 0.30.0)
 
 GEM

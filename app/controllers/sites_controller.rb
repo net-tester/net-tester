@@ -5,16 +5,6 @@ class SitesController < ApplicationController
     render json: @sites
   end
 
-  # GET /sites/1
-  def show
-    @site = {}
-    render json: @site
-  end
-
-  # DELETE /sites/1
-  def destroy
-  end
-
   private
     # Only allow a trusted parameter "white list" through.
     def site_params
