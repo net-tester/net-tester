@@ -1,8 +1,8 @@
 class SitesController < ApplicationController
   # GET /sites
-  def index
-    @sites = []
-    render json: @sites
+  def show
+    @site = {}
+    render json: @site
   end
 
   private
