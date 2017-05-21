@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resource :sites, :only => [:show, :destroy]
-  resources :hosts, :only => [:index, :show, :update, :destroy]
+  resources :hosts, param: :name, :only => [:index, :show, :update, :destroy]
   get '*not_found' => 'application#routing_error'
   post '*not_found' => 'application#routing_error'
   put '*not_found' => 'application#routing_error'

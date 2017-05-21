@@ -25,7 +25,7 @@ class HostsController < ApplicationController
 
     netns_params = host_params.permit!
     netns_params = netns_params.to_h.symbolize_keys
-    netns_params[:name] = params[:id]
+    netns_params[:name] = params[:name]
     @host = NetTester::Netns.new(netns_params)
     render json: @host
   end
