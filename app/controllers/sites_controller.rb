@@ -5,9 +5,9 @@ class SitesController < ApplicationController
     render json: @site
   end
 
-  private
-    # Only allow a trusted parameter "white list" through.
-    def site_params
-      params.fetch(:site, {})
-    end
+  # DELETE /sites
+  def destroy
+    NetTester.kill
+    system('sudo rm -rf /etc/netns/*')
+  end
 end
