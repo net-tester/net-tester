@@ -19,6 +19,8 @@ class HostsController < ApplicationController
 
   # PUT /hosts/name
   def update
+    HostValidator.new(host_params).validate!
+
     run_result = run_net_tester
     unless run_result.nil? then
       result = {error: run_result}
@@ -26,9 +28,11 @@ class HostsController < ApplicationController
     else
       host = Phut::Netns.find_by(name: params[:name])
       if host.nil? then
-        netns_params = host_params.permit!
-        netns_params = netns_params.to_h.symbolize_keys
+        netns_params = host_params.to_h.symbolize_keys
         netns_params[:name] = params[:name]
+        netns_params[:virtual_port_number] = netns_params[:virtual_port_number].to_i
+        netns_params[:physical_port_number] = netns_params[:physical_port_number].to_i
+        netns_params[:vlan_id] = netns_params[:vlan_id].to_i unless netns_params[:vlan_id].nil?
         host = NetTester::Netns.new(netns_params)
       end
       render json: host, status: :ok
@@ -38,7 +42,7 @@ class HostsController < ApplicationController
   private
     # Only allow a trusted parameter "white list" through.
     def host_params
-      params.fetch(:host, {})
+      params.require(:host).permit(:mac_address, :ip_address, :netmask, :gateway, :virtual_port_number, :physical_port_number, :vlan_id)
     end
 
    # Run NetTester if that's not running.
