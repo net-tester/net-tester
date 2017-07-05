@@ -1,3 +1,5 @@
+require 'resolv'
+
 class HostValidator
 
   MAC_ADDRESS_PATTERN = /\A^([0-9a-zA-F]{2}:){5}[0-9a-zA-F]{2}$\z/
