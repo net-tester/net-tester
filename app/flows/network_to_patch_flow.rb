@@ -4,6 +4,7 @@
 class NetworkToPatchFlow < ActiveFlow::Base
   def self.create(physical_switch_dpid:, in_port:)
     send_flow_mod_add(physical_switch_dpid,
+                      priority: NetTester::PRIORITY_MID,
                       match: Match.new(in_port: in_port),
                       actions: SendOutPort.new(1))
   end

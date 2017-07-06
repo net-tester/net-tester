@@ -9,6 +9,11 @@ require 'trema'
 
 # Base module
 module NetTester
+
+  PRIORITY_LOW = 100
+  PRIORITY_MID = 200
+  PRIORITY_HIGH = 300
+
   extend Phut::ShellRunner
 
   def self.log_dir
