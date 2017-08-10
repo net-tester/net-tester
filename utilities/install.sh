@@ -1,5 +1,5 @@
 sudo sh <<EOF
-adduser -s /usr/sbin/nologin net-tester
+adduser --shell /usr/sbin/nologin net-tester
 cd /opt
 git clone https://github.com/net-tester/net-tester.git
 chown -R net-tester:net-tester net-tester
