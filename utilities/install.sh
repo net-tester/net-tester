@@ -7,8 +7,8 @@ cd net-tester
 git config --local url."https://".insteadOf "git://"
 git checkout feature/api-merge
 sudo -u net-tester bundle install --path=vendor/bundle
-cp utilities/net-tester.sudoers /etc/sudoers.d/
-cp utilities/net-tester.service /etc/systemd/system/
+ln -s utilities/net-tester.sudoers /etc/sudoers.d/net-tester.sudoers
+ln -s utilities/net-tester.service /etc/systemd/system/net-tester.service
 systemctl daemon-reload
 systemctl enable net-tester
 systemctl start net-tester
