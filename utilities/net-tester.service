@@ -1,0 +1,14 @@
+[Unit]
+Description=NetTester Daemon
+
+[Service]
+WorkingDirectory=/opt/net-tester
+ExecStart=/opt/net-tester/bin/rails.sh
+ExecStop=/bin/kill ${MAINPID}
+Restart=always
+Type=simple
+User=net-tester
+Group=net-tester
+
+[Install]
+WantedBy=multi-user.target
