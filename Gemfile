@@ -22,6 +22,7 @@ group :development, :test do
 
   gem 'aruba'
   gem 'cucumber-rails', require: false
+  gem 'cucumber-api-steps', require: false
   gem 'factory_girl'
   gem 'rspec-rails'
   gem 'rspec-expectations'

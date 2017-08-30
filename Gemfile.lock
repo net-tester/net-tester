@@ -113,6 +113,10 @@ GEM
       gherkin (~> 4.0)
       multi_json (>= 1.7.5, < 2.0)
       multi_test (>= 0.1.2)
+    cucumber-api-steps (0.13)
+      cucumber (>= 1.2.1)
+      jsonpath (>= 0.1.2)
+      rspec (>= 2.12.0)
     cucumber-core (1.5.0)
       gherkin (~> 4.0)
     cucumber-rails (1.4.0)
@@ -137,6 +141,8 @@ GEM
       activesupport (>= 4.2.0)
     i18n (0.8.1)
     json (1.8.6)
+    jsonpath (0.8.7)
+      multi_json
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -269,6 +275,7 @@ PLATFORMS
 DEPENDENCIES
   aruba
   byebug
+  cucumber-api-steps
   cucumber-rails
   factory_girl
   listen (>= 3.0.5, < 3.2)

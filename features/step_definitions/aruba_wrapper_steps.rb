@@ -31,3 +31,7 @@ end
 Then(/^次のファイルができる:$/) do |table|
   step 'the following files should exist:', table
 end
+
+Then(/^次のファイルが存在しない:$/) do |table|
+  step 'the following files should not exist:', table
+end
