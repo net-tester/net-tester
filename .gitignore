@@ -42,9 +42,5 @@ build/
 /log/*
 !/log/.keep
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc

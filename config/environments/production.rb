@@ -78,8 +78,5 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Do not dump schema after migrations.
-  config.active_record.dump_schema_after_migration = false
-
   config.web_console.whitelisted_ips = ENV['WHITELISTED_IPS'] || '0.0.0.0/0'
 end
