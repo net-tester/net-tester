@@ -13,7 +13,7 @@ class SitesController < ApplicationController
       FileUtils.rm_r(NetTester.pid_dir)
       FileUtils.rm_r(NetTester.socket_dir)
       system('sudo rm -rf /etc/netns/*')
-      system("kill -9 `ps aux | grep rema | grep -v grep | awk '{print $2}'`")
+      system("kill -9 `ps aux | grep trema | grep -v grep | awk '{print $2}'`")
     end
   end
 end
