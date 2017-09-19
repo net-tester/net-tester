@@ -51,6 +51,7 @@ class HostsController < ApplicationController
     FileUtils.mkdir_p(NetTester.log_dir)
     FileUtils.mkdir_p(NetTester.pid_dir)
     FileUtils.mkdir_p(NetTester.socket_dir)
+    FileUtils.mkdir_p(NetTester.process_dir)
     device = ENV['DEVICE'] || 'eth1'
     dpid = ENV['DPID'].try(&:hex) || 0x123
     NetTester.run(network_device: device, physical_switch_dpid: dpid)

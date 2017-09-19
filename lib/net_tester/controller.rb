@@ -18,6 +18,11 @@ class NetTesterController < Trema::Controller
   def switch_ready(dpid)
     logger.info "Switch #{dpid.to_hex} connected"
     @physical_switch_started = true if dpid == @physical_switch_dpid
+
+    # Add default drop rule to each switch
+    # to avoid death by parse error of unknown packet/frame.
+    send_flow_mod_add(dpid, priority: 0, match: Match.new)
+
     # TODO: maybe need more precise broadcasting control?
     return unless dpid != 0xdad1001
     send_flow_mod_add(0xdad1c001,
