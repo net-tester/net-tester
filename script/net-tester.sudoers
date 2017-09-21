@@ -1,0 +1,2 @@
+net-tester    ALL=(ALL)       NOPASSWD: /usr/bin/ovs-vsctl, /bin/rm, /sbin/sysctl, /usr/bin/ovs-ofctl, /sbin/ip, /sbin/ifconfig
+

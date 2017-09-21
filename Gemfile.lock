@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/trema/phut.git
+  remote: https://github.com/trema/phut.git
   revision: 9db28bee7dff99a7b7c98849c9986e64aeade827
   branch: develop
   specs:
@@ -10,7 +10,7 @@ GIT
       pry (~> 0.10.3)
 
 GIT
-  remote: git://github.com/trema/pio.git
+  remote: https://github.com/trema/pio.git
   revision: 620a7a9b0a4e18bbc38e1c6d641360990ab02607
   branch: develop
   specs:
@@ -19,7 +19,7 @@ GIT
       bindata (~> 2.1.0)
 
 GIT
-  remote: git://github.com/trema/trema.git
+  remote: https://github.com/trema/trema.git
   revision: 0219e5042890b6c2e5d86c850426a1f539c26a85
   branch: develop
   specs:
@@ -102,7 +102,7 @@ GEM
       xpath (~> 2.0)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
-    coderay (1.1.1)
+    coderay (1.1.2)
     concurrent-ruby (1.0.5)
     contracts (0.16.0)
     cucumber (2.4.0)
