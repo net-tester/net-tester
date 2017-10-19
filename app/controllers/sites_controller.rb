@@ -7,7 +7,7 @@ class SitesController < ApplicationController
 
   # DELETE /sites
   def destroy
-    if NetTester.running? then
+    if NetTester.running?
       NetTester.kill
       FileUtils.rm_r(NetTester.log_dir)
       FileUtils.rm_r(NetTester.pid_dir)
