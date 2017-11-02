@@ -10,23 +10,30 @@ module NetTester
     @@mutex = Mutex.new
 
     def self.create(name, host_params)
-      run_result = true
       @@mutex.synchronize do
-        run_result = run_net_tester
-        if run_result
-          return nil, run_result
-        else
-          host = Phut::Netns.find_by(name: name)
-          unless host
-            netns_params = host_params.to_h.symbolize_keys
-            netns_params[:name] = name
-            netns_params[:virtual_port_number] = netns_params[:virtual_port_number].to_i
-            netns_params[:physical_port_number] = netns_params[:physical_port_number].to_i
-            netns_params[:vlan_id] = netns_params[:vlan_id].to_i unless netns_params[:vlan_id].nil?
+        run_net_tester
+        host = Phut::Netns.find_by(name: name)
+        unless host
+          netns_params = host_params.to_h.symbolize_keys
+          netns_params[:name] = name
+          netns_params[:virtual_port_number] = netns_params[:virtual_port_number].to_i
+          netns_params[:physical_port_number] = netns_params[:physical_port_number].to_i
+          netns_params[:vlan_id] = netns_params[:vlan_id].to_i unless netns_params[:vlan_id].nil?
+          begin
             host = NetTester::Netns.new(netns_params)
+          rescue => e
+            # TODO: fix to rollback correctly
+            NetTester.kill
+            FileUtils.rm_r(NetTester.log_dir)
+            FileUtils.rm_r(NetTester.pid_dir)
+            FileUtils.rm_r(NetTester.socket_dir)
+            FileUtils.rm_r(NetTester.process_dir)
+            system('sudo rm -rf /etc/netns/*')
+            system("kill -9 `ps aux | grep trema | grep -v grep | awk '{print $2}'`")
+            raise e
           end
-          return host, nil
         end
+        return host, nil
       end
     end
 
@@ -59,7 +66,7 @@ module NetTester
 
     # Run NetTester if that's not running.
     def self.run_net_tester
-      return nil if NetTester.running?
+      return if NetTester.running?
       FileUtils.mkdir_p(NetTester.log_dir)
       FileUtils.mkdir_p(NetTester.pid_dir)
       FileUtils.mkdir_p(NetTester.socket_dir)
@@ -68,9 +75,6 @@ module NetTester
       dpid = ENV['DPID'].try(&:hex) || 0x123
       NetTester.run(network_device: device, physical_switch_dpid: dpid)
       sleep 2
-      nil
-    rescue => e
-      e
     end
 
     def patch_netns_to_physical_port
