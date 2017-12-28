@@ -4,6 +4,8 @@ Before do
     NetTester.log_dir = './log'
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
+    NetTester.process_dir = './processes'
+    NetTester.upload_dir = './upload'
   end
 end
 
@@ -12,6 +14,8 @@ After do
     NetTester.log_dir = './log'
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
+    NetTester.process_dir = './processes'
+    NetTester.upload_dir = './upload'
 
     NetTester.kill
     PhysicalTestSwitch.destroy_all

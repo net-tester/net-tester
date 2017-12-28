@@ -16,6 +16,8 @@ gem 'pio', git: 'https://github.com/trema/pio.git', branch: 'develop'
 gem 'phut', git: 'https://github.com/trema/phut.git', branch: 'develop'
 gem 'trema', git: 'https://github.com/trema/trema.git', branch: 'develop'
 
+gem 'file_validators'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
