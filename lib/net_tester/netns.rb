@@ -28,6 +28,7 @@ module NetTester
             FileUtils.rm_r(NetTester.pid_dir)
             FileUtils.rm_r(NetTester.socket_dir)
             FileUtils.rm_r(NetTester.process_dir)
+            FileUtils.rm_r(NetTester.material_dir)
             system('sudo rm -rf /etc/netns/*')
             system("kill -9 `ps aux | grep trema | grep -v grep | awk '{print $2}'`")
             raise e
@@ -71,6 +72,7 @@ module NetTester
       FileUtils.mkdir_p(NetTester.pid_dir)
       FileUtils.mkdir_p(NetTester.socket_dir)
       FileUtils.mkdir_p(NetTester.process_dir)
+      FileUtils.mkdir_p(NetTester.material_dir)
       device = ENV['DEVICE'] || 'eth1'
       dpid = ENV['DPID'].try(&:hex) || 0x123
       NetTester.run(network_device: device, physical_switch_dpid: dpid)

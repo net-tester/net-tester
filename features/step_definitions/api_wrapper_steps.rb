@@ -31,7 +31,7 @@ When /^(GET|POST|PUT|DELETE) リクエストを "([^"]*)" に送信し、JSON �
 end
 
 When /^(POST|PUT) リクエストで "([^"]*)" にファイル "([^"]*)" を "([^"]*)" の形式でアップロード$/ do |verb, path, file_name, content_type|
-  post path, uploaded_file: {source: Rack::Test::UploadedFile.new(Rails.root.join('features/support/attachments/', file_name), content_type)}
+  post path, material: {file: Rack::Test::UploadedFile.new(Rails.root.join('features/support/attachments/', file_name), content_type)}
 end
 
 Then /^レスポンスのステータスコードが "([^"]*)" である$/ do |status|
