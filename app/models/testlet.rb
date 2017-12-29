@@ -1,4 +1,4 @@
-class Material
+class Testlet
 
   include ActiveModel::Model
 
@@ -14,19 +14,19 @@ class Material
   end
 
   def self.all
-    Dir.glob("#{NetTester.material_dir}/*").map do |path|
+    Dir.glob("#{NetTester.testlet_dir}/*").map do |path|
       File.basename(path)
     end.sort
   end
 
   def self.create(attributes={})
-    Material.new(attributes).save
+    Testlet.new(attributes).save
   end
 
   def save
     run_callbacks :save do
-      FileUtils.mkdir_p(NetTester.material_dir)
-      file = File.new("#{NetTester.material_dir}/#{@file.original_filename}", 'w+b')
+      FileUtils.mkdir_p(NetTester.testlet_dir)
+      file = File.new("#{NetTester.testlet_dir}/#{@file.original_filename}", 'w+b')
       file.write @file.read
       file.close
     end

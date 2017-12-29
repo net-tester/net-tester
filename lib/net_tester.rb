@@ -18,7 +18,7 @@ module NetTester
   extend Phut::ShellRunner
 
   @process_dir = '/tmp'
-  @material_dir = '/tmp'
+  @testlet_dir = '/tmp'
 
   def self.log_dir
     Phut.log_dir
@@ -57,14 +57,14 @@ module NetTester
     @process_dir = dir
   end
 
-  def self.material_dir
-    @material_dir
+  def self.testlet_dir
+    @testlet_dir
   end
 
-  def self.material_dir=(dir)
+  def self.testlet_dir=(dir)
     dir = File.expand_path(dir)
     FileUtils.mkdir_p(dir) unless File.exist?(dir)
-    @material_dir = dir
+    @testlet_dir = dir
   end
 
   def self.run(network_device:, physical_switch_dpid:)

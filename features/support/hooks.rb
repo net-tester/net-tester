@@ -5,7 +5,7 @@ Before do
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
     NetTester.process_dir = './processes'
-    NetTester.material_dir = './materials'
+    NetTester.testlet_dir = './testlets'
   end
 end
 
@@ -15,7 +15,7 @@ After do
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
     NetTester.process_dir = './processes'
-    NetTester.material_dir = './materials'
+    NetTester.testlet_dir = './testlets'
 
     NetTester.kill
     PhysicalTestSwitch.destroy_all
