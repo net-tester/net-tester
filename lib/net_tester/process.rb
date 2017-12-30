@@ -1,44 +1,45 @@
 # frozen_string_literal: true
 
 module NetTester
-
+  # Process class
   class Process
-    @@mutex = Mutex.new
-    @@process_id_counter = 0
-    @@processes = {}
+    @mutex = Mutex.new
+    @process_id_counter = 0
+    @processes = {}
+
+    class << self
+      attr_accessor :mutex, :process_id_counter, :processes
+    end
 
     def self.all
-      @@processes
+      @processes
     end
 
     def self.find(id)
-      @@processes[id]
+      @processes[id]
     end
 
     def self.destroy_all
-      @@mutex.synchronize do
-        @@processes.clear
+      @mutex.synchronize do
+        @processes.clear
       end
     end
 
     def self.create(process_params)
       host_name = process_params[:host_name]
-      if Phut::Netns.find_by(name: host_name)
-        args = process_params.to_h.symbolize_keys
-        args[:initial_wait] = args[:initial_wait].to_i unless args[:initial_wait].nil?
-        args[:process_wait] = args[:process_wait].to_i unless args[:process_wait].nil?
-        command = args.delete(:command)
-        process = NetTester::Process.new(args)
-        process.exec(command)
-        return process, nil
-      else
-        return nil, {error: "no such host: #{host_name}"}
-      end
+      return nil, { error: "no such host: #{host_name}" } unless Phut::Netns.find_by(name: host_name)
+      args = process_params.to_h.symbolize_keys
+      args[:initial_wait] = args[:initial_wait].to_i unless args[:initial_wait].nil?
+      args[:process_wait] = args[:process_wait].to_i unless args[:process_wait].nil?
+      command = args.delete(:command)
+      process = NetTester::Process.new(args)
+      process.exec(command)
+      [process, nil]
     end
 
     def initialize(host_name:, initial_wait: 3, process_wait: 1)
-      @@mutex.synchronize do
-        @id = @@process_id_counter = @@process_id_counter + 1
+      self.class.mutex.synchronize do
+        @id = self.class.process_id_counter = (self.class.process_id_counter + 1)
         @host_name = host_name
         @log_dir = File.join(Aruba.config.working_directory, 'processes', @id.to_s)
         FileUtils.mkdir_p(@log_dir) unless File.exist?(@log_dir)
@@ -49,28 +50,20 @@ module NetTester
         @stdout = ''
         @stderr = ''
         @status = 'created'
-        @@processes[@id] = self
+        self.class.processes[@id] = self
       end
     end
 
-    def id
-      @id
-    end
+    attr_reader :id
 
-    def stdout
-      @stdout
-    end
+    attr_reader :stdout
 
-    def stderr
-      @stderr
-    end
+    attr_reader :stderr
 
-    def status
-      @status
-    end
+    attr_reader :status
 
     def exec(command)
-      thread = Thread.start do
+      Thread.start do
         begin
           @status = 'waiting initial wait'
           sleep @initial_wait
@@ -82,7 +75,7 @@ module NetTester
           sleep @process_wait
           @stdout = File.read(@stdout_file)
           @stderr = File.read(@stderr_file)
-        rescue => e
+        rescue StandardError => e
           @stderr = e
         end
         @status = 'finished'
@@ -90,4 +83,3 @@ module NetTester
     end
   end
 end
-

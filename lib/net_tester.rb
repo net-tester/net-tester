@@ -10,7 +10,6 @@ require 'trema'
 
 # Base module
 module NetTester
-
   PRIORITY_LOW = 100
   PRIORITY_MID = 200
   PRIORITY_HIGH = 300
@@ -140,7 +139,7 @@ module NetTester
 
   def self.running?
     Trema.trema_process('NetTesterController', NetTester.socket_dir).controller
-  rescue
+  rescue StandardError
     false
   end
 
@@ -151,14 +150,14 @@ module NetTester
     Phut::Vhost.destroy_all
     Phut::Link.destroy_all
     Process.destroy_all
-  rescue
+  rescue StandardError
     true
   ensure
     begin
       Trema.trema_process('NetTesterController', NetTester.socket_dir).killall
     rescue DRb::DRbConnError
       true
-    rescue
+    rescue StandardError
       # Controller process "NetTesterController" does not exist
       true
     end

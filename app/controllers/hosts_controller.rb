@@ -1,5 +1,7 @@
-class HostsController < ApplicationController
+# frozen_string_literal: true
 
+# Host controller
+class HostsController < ApplicationController
   # GET /hosts
   def index
     hosts = Phut::Netns.all
@@ -8,8 +10,12 @@ class HostsController < ApplicationController
 
   # GET /hosts/name
   def show
-    result, code = Phut::Netns.find_by(name: params[:name]), :ok
-    result, code = {error: "no such host: #{params[:name]}"}, :not_found unless result
+    result = Phut::Netns.find_by(name: params[:name])
+    code = :ok
+    unless result
+      result = { error: "no such host: #{params[:name]}" }
+      code = :not_found
+    end
     render json: result, status: code
   end
 
@@ -17,7 +23,10 @@ class HostsController < ApplicationController
   def update
     HostValidator.new(host_params).validate!
     result, error, code = *NetTester::Netns.create(params[:name], host_params), :ok
-    result, code = {error: error}, :internal_server_error if error
+    if error
+      result = { error: error }
+      code = :internal_server_error
+    end
     render json: result, status: code
   end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module NetTester
   class Patch
     # port-to-port patch list, [[port1,port2],[port3,port4],...]
@@ -6,9 +7,7 @@ module NetTester
 
     def self.raise_by_overlapped_patch(port_id_list)
       port_id_list.each do |port_id|
-        if @p2p_patch_list.any? { |patch| patch.include?(port_id) }
-          raise "Port #{port_id} is already in use by other patch"
-        end
+        raise "Port #{port_id} is already in use by other patch" if @p2p_patch_list.any? { |patch| patch.include?(port_id) }
       end
     end
 

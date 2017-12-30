@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'resolv'
 
+# Host model class
 class HostValidator
-
   MAC_ADDRESS_PATTERN = /\A^([0-9a-zA-F]{2}:){5}[0-9a-zA-F]{2}$\z/
   IP_ADDRESS_PATTERN = Regexp.union(Resolv::IPv4::Regex, Resolv::IPv6::Regex)
 
@@ -17,8 +19,7 @@ class HostValidator
   validates :physical_port_number, numericality: { only_integer: true, greater_than: 1 }
   validates :vlan_id, numericality: { only_integer: true, greater_than: 0, less_than: 4096 }, allow_nil: true
 
-  def initialize(attributes={})
+  def initialize(attributes = {})
     super
   end
-
 end

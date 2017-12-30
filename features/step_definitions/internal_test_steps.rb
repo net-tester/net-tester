@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 Given(/^テストホスト (\d+) 台を起動$/) do |nhost|

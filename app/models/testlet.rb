@@ -1,5 +1,7 @@
-class Testlet
+# frozen_string_literal: true
 
+# Testlet model class
+class Testlet
   include ActiveModel::Model
 
   attr_accessor :file
@@ -9,7 +11,7 @@ class Testlet
   define_model_callbacks :save
   before_save :validate
 
-  def initialize(attributes={})
+  def initialize(attributes = {})
     super
   end
 
@@ -19,7 +21,7 @@ class Testlet
     end.sort
   end
 
-  def self.create(attributes={})
+  def self.create(attributes = {})
     Testlet.new(attributes).save
   end
 
@@ -35,6 +37,6 @@ class Testlet
   private
 
   def validate
-    self.validate!
+    validate!
   end
 end

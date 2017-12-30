@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'English'
 
 class PacketInLogger < Trema::Controller
@@ -19,7 +20,7 @@ class PacketInLogger < Trema::Controller
     end
     # flooding without learning/flow-mod
     send_packet_out(dpid, packet_in: message, actions: SendOutPort.new(:flood))
-  rescue
+  rescue StandardError
     logger.error $ERROR_INFO.inspect
   end
 end

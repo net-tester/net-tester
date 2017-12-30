@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Before do
   Dir.chdir 'tmp/aruba' do
     NetTester.log_dir = './log'
@@ -26,14 +27,14 @@ After do
       Trema.trema_process('LearningSwitch', Phut.socket_dir).killall
     rescue DRb::DRbConnError
       true
-    rescue
+    rescue StandardError
       true
     end
     begin
       Trema.trema_process('PacketInLogger', Phut.socket_dir).killall
     rescue DRb::DRbConnError
       true
-    rescue
+    rescue StandardError
       true
     end
   end

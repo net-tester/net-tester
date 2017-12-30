@@ -6,11 +6,10 @@ require 'phut/netns'
 module NetTester
   # Phut::Netns wrapper class
   class Netns
-
-    @@mutex = Mutex.new
+    @mutex = Mutex.new
 
     def self.create(name, host_params)
-      @@mutex.synchronize do
+      @mutex.synchronize do
         run_net_tester
         host = Phut::Netns.find_by(name: name)
         unless host
@@ -21,7 +20,7 @@ module NetTester
           netns_params[:vlan_id] = netns_params[:vlan_id].to_i unless netns_params[:vlan_id].nil?
           begin
             host = NetTester::Netns.new(netns_params)
-          rescue => e
+          rescue StandardError => e
             # TODO: fix to rollback correctly
             NetTester.kill
             FileUtils.rm_r(NetTester.log_dir)
@@ -91,5 +90,7 @@ module NetTester
       @netns.device = link.device(@netns.name)
       @netns.exec("ethtool -K #{@netns.device} tx off")
     end
-  end
+
+    private_class_method :run_net_tester
+ end
 end

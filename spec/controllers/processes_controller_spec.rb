@@ -24,106 +24,102 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe ProcessesController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # Process. As you add validations to Process, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:valid_attributes) do
+    skip('Add a hash of attributes valid for your model')
+  end
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  let(:invalid_attributes) do
+    skip('Add a hash of attributes invalid for your model')
+  end
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # ProcessesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "returns a success response" do
+  describe 'GET #index' do
+    it 'returns a success response' do
       process = Process.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(response).to be_success
     end
   end
 
-  describe "GET #show" do
-    it "returns a success response" do
+  describe 'GET #show' do
+    it 'returns a success response' do
       process = Process.create! valid_attributes
-      get :show, params: {id: process.to_param}, session: valid_session
+      get :show, params: { id: process.to_param }, session: valid_session
       expect(response).to be_success
     end
   end
 
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new Process" do
-        expect {
-          post :create, params: {process: valid_attributes}, session: valid_session
-        }.to change(Process, :count).by(1)
+  describe 'POST #create' do
+    context 'with valid params' do
+      it 'creates a new Process' do
+        expect do
+          post :create, params: { process: valid_attributes }, session: valid_session
+        end.to change(Process, :count).by(1)
       end
 
-      it "renders a JSON response with the new process" do
-
-        post :create, params: {process: valid_attributes}, session: valid_session
+      it 'renders a JSON response with the new process' do
+        post :create, params: { process: valid_attributes }, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
         expect(response.location).to eq(process_url(Process.last))
       end
     end
 
-    context "with invalid params" do
-      it "renders a JSON response with errors for the new process" do
-
-        post :create, params: {process: invalid_attributes}, session: valid_session
+    context 'with invalid params' do
+      it 'renders a JSON response with errors for the new process' do
+        post :create, params: { process: invalid_attributes }, session: valid_session
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
     end
   end
 
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested process" do
-        process = Process.create! valid_attributes
-        put :update, params: {id: process.to_param, process: new_attributes}, session: valid_session
-        process.reload
-        skip("Add assertions for updated state")
+  describe 'PUT #update' do
+    context 'with valid params' do
+      let(:new_attributes) do
+        skip('Add a hash of attributes valid for your model')
       end
 
-      it "renders a JSON response with the process" do
+      it 'updates the requested process' do
+        process = Process.create! valid_attributes
+        put :update, params: { id: process.to_param, process: new_attributes }, session: valid_session
+        process.reload
+        skip('Add assertions for updated state')
+      end
+
+      it 'renders a JSON response with the process' do
         process = Process.create! valid_attributes
 
-        put :update, params: {id: process.to_param, process: valid_attributes}, session: valid_session
+        put :update, params: { id: process.to_param, process: valid_attributes }, session: valid_session
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
       end
     end
 
-    context "with invalid params" do
-      it "renders a JSON response with errors for the process" do
+    context 'with invalid params' do
+      it 'renders a JSON response with errors for the process' do
         process = Process.create! valid_attributes
 
-        put :update, params: {id: process.to_param, process: invalid_attributes}, session: valid_session
+        put :update, params: { id: process.to_param, process: invalid_attributes }, session: valid_session
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested process" do
+  describe 'DELETE #destroy' do
+    it 'destroys the requested process' do
       process = Process.create! valid_attributes
-      expect {
-        delete :destroy, params: {id: process.to_param}, session: valid_session
-      }.to change(Process, :count).by(-1)
+      expect do
+        delete :destroy, params: { id: process.to_param }, session: valid_session
+      end.to change(Process, :count).by(-1)
     end
   end
-
 end
