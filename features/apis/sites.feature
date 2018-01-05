@@ -1,16 +1,16 @@
 Feature: API
 
   Scenario: sites の取得
-    When GET リクエストを "/sites" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    When GET "/sites"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       {}
       """
 
   Scenario: sites の削除
-    When DELETE リクエストを "/sites" に送信
-    Then レスポンスのステータスコードが "204" である
+    When DELETE "/sites"
+    Then HTTP レスポンスは "204"
     And OpenFlow コントローラが停止
     And すべてのスイッチが停止
     And すべてのリンクが停止
@@ -33,8 +33,8 @@ Feature: API
 
   Scenario: NetTester 起動時の sites の削除
     Given コマンド `net_tester run --device eth1 --nhost 3 --dpid 0x123 -S sockets` の実行に成功
-    When DELETE リクエストを "/sites" に送信
-    Then レスポンスのステータスコードが "204" である
+    When DELETE "/sites"
+    Then HTTP レスポンスは "204"
     And OpenFlow コントローラが停止
     And すべてのスイッチが停止
     And すべてのリンクが停止

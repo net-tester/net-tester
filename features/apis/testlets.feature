@@ -1,32 +1,32 @@
 Feature: NetTester API サーバの testlet API 実行
 
   Scenario: ファイル登録なしで testlets の取得
-    When GET リクエストを "/testlets" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    When GET "/testlets"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       []
       """
 
   Scenario: ファイルのアップロード
-    When POST リクエストで "/testlets" にファイル "testlet1.txt" を "application/octet-stream" の形式でアップロード
+    When POST "/testlets" で "tcp_server.sh" を "application/octet-stream" の形式でアップロード
     Then 次のファイルができる:
-      | testlets/testlet1.txt |
-    And レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+      | testlets/tcp_server.sh |
+    And HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       {}
       """
 
   Scenario: ファイル登録後に testlets の取得
-    Given POST リクエストで "/testlets" にファイル "testlet1.txt" を "application/octet-stream" の形式でアップロード
-    And POST リクエストで "/testlets" にファイル "testlet2.txt" を "application/octet-stream" の形式でアップロード
-    When GET リクエストを "/testlets" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    Given POST "/testlets" で "tcp_server.sh" を "application/octet-stream" の形式でアップロード
+    And POST "/testlets" で "tcp_client.sh" を "application/octet-stream" の形式でアップロード
+    When GET "/testlets"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       [
-        "testlet1.txt",
-        "testlet2.txt"
+        "tcp_client.sh",
+        "tcp_server.sh"
       ]
       """
