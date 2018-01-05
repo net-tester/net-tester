@@ -1,9 +1,12 @@
 # frozen_string_literal: true
+
 Before do
   Dir.chdir 'tmp/aruba' do
     NetTester.log_dir = './log'
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
+    NetTester.process_dir = './processes'
+    NetTester.testlet_dir = './testlets'
   end
 end
 
@@ -12,6 +15,8 @@ After do
     NetTester.log_dir = './log'
     NetTester.pid_dir = './pids'
     NetTester.socket_dir = './sockets'
+    NetTester.process_dir = './processes'
+    NetTester.testlet_dir = './testlets'
 
     NetTester.kill
     PhysicalTestSwitch.destroy_all
@@ -22,14 +27,14 @@ After do
       Trema.trema_process('LearningSwitch', Phut.socket_dir).killall
     rescue DRb::DRbConnError
       true
-    rescue
+    rescue StandardError
       true
     end
     begin
       Trema.trema_process('PacketInLogger', Phut.socket_dir).killall
     rescue DRb::DRbConnError
       true
-    rescue
+    rescue StandardError
       true
     end
   end

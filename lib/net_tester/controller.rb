@@ -33,9 +33,7 @@ class NetTesterController < Trema::Controller
   end
 
   def create_patch(source_port:, source_mac_address:, destination_port:, vlan_id:)
-    unless @physical_switch_started
-      raise "Physical switch #{@physical_switch_dpid.to_hex} is not yet connected to #{self.class}"
-    end
+    raise "Physical switch #{@physical_switch_dpid.to_hex} is not yet connected to #{self.class}" unless @physical_switch_started
     Patch.create(physical_switch_dpid: @physical_switch_dpid,
                  vlan_id: vlan_id,
                  source_port: source_port,
@@ -44,9 +42,7 @@ class NetTesterController < Trema::Controller
   end
 
   def create_p2p_patch(source_port:, destination_port:)
-    unless @physical_switch_started
-      raise "Physical switch #{@physical_switch_dpid.to_hex} is not yet connected to #{self.class}"
-    end
+    raise "Physical switch #{@physical_switch_dpid.to_hex} is not yet connected to #{self.class}" unless @physical_switch_started
     Patch.create_p2p(physical_switch_dpid: @physical_switch_dpid,
                      source_port: source_port,
                      destination_port: destination_port)

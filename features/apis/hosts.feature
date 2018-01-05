@@ -1,16 +1,16 @@
 Feature: NetTester API サーバの hosts API 実行
 
   Scenario: host 登録なしで hosts の取得
-    When GET リクエストを "/hosts" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    When GET "/hosts"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       []
       """
 
   Scenario: vlan なしの host の登録
     When DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host1" に送信
+    And PUT "/hosts/host1"
       """
       {
         "mac_address": "00:00:00:00:00:01",
@@ -24,8 +24,8 @@ Feature: NetTester API サーバの hosts API 実行
     Then 次のファイルができる:
       | log/NetTesterController.log  |
       | pids/NetTesterController.pid |
-    And レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    And HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       {
         "netns": {
@@ -47,7 +47,7 @@ Feature: NetTester API サーバの hosts API 実行
 
   Scenario: vlan ありの host の登録
     When DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host2" に送信
+    And PUT "/hosts/host2"
       """
       {
         "mac_address": "00:00:00:00:00:02",
@@ -62,8 +62,8 @@ Feature: NetTester API サーバの hosts API 実行
     Then 次のファイルができる:
       | log/NetTesterController.log  |
       | pids/NetTesterController.pid |
-    And レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    And HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       {
         "netns": {
@@ -85,7 +85,7 @@ Feature: NetTester API サーバの hosts API 実行
 
   Scenario: host 登録後の hosts の取得
     When DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host1" に送信
+    And PUT "/hosts/host1"
       """
       {
         "mac_address": "00:00:00:00:00:01",
@@ -96,7 +96,7 @@ Feature: NetTester API サーバの hosts API 実行
         "physical_port_number": 2
       }
       """
-    And PUT リクエストを "/hosts/host2" に送信
+    And PUT "/hosts/host2"
       """
       {
         "mac_address": "00:00:00:00:00:02",
@@ -108,9 +108,9 @@ Feature: NetTester API サーバの hosts API 実行
         "vlan_id": 2000
       }
       """
-    And GET リクエストを "/hosts" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    And GET "/hosts"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       [
         {

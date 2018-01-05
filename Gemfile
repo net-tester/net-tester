@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gemspec
@@ -12,21 +13,24 @@ gem 'puma', '~> 3.7'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'pio', git: 'https://github.com/trema/pio.git', branch: 'develop'
 gem 'phut', git: 'https://github.com/trema/phut.git', branch: 'develop'
+gem 'pio', git: 'https://github.com/trema/pio.git', branch: 'develop'
 gem 'trema', git: 'https://github.com/trema/trema.git', branch: 'develop'
+
+gem 'file_validators'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
   gem 'aruba'
-  gem 'cucumber-rails', require: false
   gem 'cucumber-api-steps', require: false
+  gem 'cucumber-rails', require: false
   gem 'factory_girl'
-  gem 'rspec-rails'
   gem 'rspec-expectations'
   gem 'rspec-given'
+  gem 'rspec-rails'
+  gem 'rubocop'
 end
 
 group :development do
@@ -38,5 +42,4 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'rubocop'
 end

@@ -1,5 +1,5 @@
-# coding: utf-8
 # frozen_string_literal: true
+
 Given(/^NetTester 物理スイッチとテスト対象ホストを次のように接続:$/) do |table|
   ip_of_host = {}
   mac_of_host = {}

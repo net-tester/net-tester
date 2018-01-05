@@ -1,5 +1,5 @@
-# coding: utf-8
 # frozen_string_literal: true
+
 When(/^コマンド `([^`]+)` を実行$/) do |command|
   step "I run `#{command}`"
 end

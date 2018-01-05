@@ -1,5 +1,7 @@
-class ProcessesController < ApplicationController
+# frozen_string_literal: true
 
+# Process controller
+class ProcessesController < ApplicationController
   # GET /processes
   def index
     processes = NetTester::Process.all.values
@@ -9,8 +11,12 @@ class ProcessesController < ApplicationController
   # GET /processes/1
   def show
     id = params[:id].to_i
-    result, code = NetTester::Process.find(id), :ok
-    result, code = {error: "no such process: #{id}"}, :not_found unless result
+    result = NetTester::Process.find(id)
+    code = :ok
+    unless result
+      result = { error: "no such process: #{id}" }
+      code = :not_found
+    end
     render json: result, status: code
   end
 
@@ -18,7 +24,10 @@ class ProcessesController < ApplicationController
   def create
     ProcessValidator.new(process_params).validate!
     result, error, code = *NetTester::Process.create(process_params), :ok
-    result, code = {error: error}, :bad_request if error
+    if error
+      result = { error: error }
+      code = :bad_request
+    end
     render json: result, status: code
   end
 

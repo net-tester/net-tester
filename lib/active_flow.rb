@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'active_flow/base'
 require 'phut/vhost'
 require 'net_tester'

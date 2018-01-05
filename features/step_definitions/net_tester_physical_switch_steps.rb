@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 Given(/^DPID が (\S+) の NetTester 物理スイッチ$/) do |dpid|

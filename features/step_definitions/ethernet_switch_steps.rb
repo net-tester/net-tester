@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 Given(/^テスト対象のイーサネットスイッチ$/) do

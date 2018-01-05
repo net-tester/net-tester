@@ -1,16 +1,16 @@
 Feature: NetTester API サーバの processes API 実行
 
   Scenario: process 実行なしで processess の取得
-    When GET リクエストを "/processes" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    When GET "/processes"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       []
       """
 
   Scenario: process の実行
     Given DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host1" に送信
+    And PUT "/hosts/host1"
       """
       {
         "mac_address": "00:00:00:00:00:01",
@@ -21,19 +21,19 @@ Feature: NetTester API サーバの processes API 実行
         "physical_port_number": 2
       }
       """
-    When POST リクエストを "/processes" に送信
+    When POST "/processes"
       """
       {
         "host_name": "host1",
         "command": "hostname"
       }
       """
-    Then レスポンスのステータスコードが "200" である
+    Then HTTP レスポンスは "200"
     And JSON レスポンスにキー "id" 値 "1" を含む
 
   Scenario: process 実行後の結果取得
     Given DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host1" に送信
+    And PUT "/hosts/host1"
       """
       {
         "mac_address": "00:00:00:00:00:01",
@@ -44,7 +44,7 @@ Feature: NetTester API サーバの processes API 実行
         "physical_port_number": 2
       }
       """
-    And POST リクエストを "/processes" に送信
+    And POST "/processes"
       """
       {
         "host_name": "host1",
@@ -53,9 +53,9 @@ Feature: NetTester API サーバの processes API 実行
         "process_wait": 0
       }
       """
-    When GET リクエストを "/processes/2" に送信し、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    When GET "/processes/2" の後、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       {
         "id": 2,
@@ -73,7 +73,7 @@ Feature: NetTester API サーバの processes API 実行
 
   Scenario: process 実行後の全結果取得
     Given DPID が 0x123 の NetTester 物理スイッチ
-    And PUT リクエストを "/hosts/host1" に送信
+    And PUT "/hosts/host1"
       """
       {
         "mac_address": "00:00:00:00:00:01",
@@ -84,7 +84,7 @@ Feature: NetTester API サーバの processes API 実行
         "physical_port_number": 2
       }
       """
-    And POST リクエストを "/processes" に送信
+    And POST "/processes"
       """
       {
         "host_name": "host1",
@@ -93,7 +93,7 @@ Feature: NetTester API サーバの processes API 実行
         "process_wait": 0
       }
       """
-    And POST リクエストを "/processes" に送信
+    And POST "/processes"
       """
       {
         "host_name": "host1",
@@ -102,7 +102,7 @@ Feature: NetTester API サーバの processes API 実行
         "process_wait": 0
       }
       """
-    And POST リクエストを "/processes" に送信
+    And POST "/processes"
       """
       {
         "host_name": "host1",
@@ -111,12 +111,12 @@ Feature: NetTester API サーバの processes API 実行
         "process_wait": 0
       }
       """
-    And GET リクエストを "/processes/3" に送信し、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
-    And GET リクエストを "/processes/4" に送信し、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
-    And GET リクエストを "/processes/5" に送信し、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
-    When GET リクエストを "/processes" に送信
-    Then レスポンスのステータスコードが "200" である
-    And JSON レスポンスが以下である
+    And GET "/processes/3" の後、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
+    And GET "/processes/4" の後、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
+    And GET "/processes/5" の後、JSON レスポンスにキー "status" 値 "finished" が含まれるのを待つ
+    When GET "/processes"
+    Then HTTP レスポンスは "200"
+    And JSON レスポンスは:
       """
       [
         {
