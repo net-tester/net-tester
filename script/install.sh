@@ -1,5 +1,5 @@
 sudo sh <<EOF
-adduser --no-create-home --shell /bin/bash -d /opt/net-tester net-tester
+adduser --no-create-home --shell /bin/bash --home /opt/net-tester net-tester
 cd /opt
 git clone https://github.com/net-tester/net-tester.git
 chown -R net-tester:net-tester net-tester
